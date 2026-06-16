@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import db from "@/lib/db";
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
+    const { id } = await params;
     const body = await req.json();
-    const item = await db.NConnect.findByPk(params.id);
+    const item = await (db as any).NConnect.findByPk(id);
     if (!item) return NextResponse.json({ error: "Not found" }, { status: 404 });
     await item.update(body);
     return NextResponse.json(item);
@@ -13,9 +14,10 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const item = await db.NConnect.findByPk(params.id);
+    const { id } = await params;
+    const item = await (db as any).NConnect.findByPk(id);
     if (!item) return NextResponse.json({ error: "Not found" }, { status: 404 });
     await item.destroy();
     return NextResponse.json({ success: true });

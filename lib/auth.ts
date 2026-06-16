@@ -16,7 +16,7 @@ export const authOptions: NextAuthOptions = {
           return null;
         }
 
-        const user = await db.User.findOne({ where: { user_name: credentials.username } });
+        const user = await (db as any).User.findOne({ where: { user_name: credentials.username } });
 
         if (!user) {
           return null;

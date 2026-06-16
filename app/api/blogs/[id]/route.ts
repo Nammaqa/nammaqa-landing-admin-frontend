@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import db from "@/lib/db";
 
-export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(req: NextRequest, { params }: { params: any }) {
   try {
+    const resolvedParams = typeof params?.then === 'function' ? await params : params;
+    const { id } = resolvedParams;
     const body = await req.json();
-    const item = await db.Blog.findByPk(params.id);
+    const item = await (db as any).Blog.findByPk(id);
     if (!item) return NextResponse.json({ error: "Not found" }, { status: 404 });
     await item.update(body);
     return NextResponse.json(item);
@@ -13,9 +15,11 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, { params }: { params: any }) {
   try {
-    const item = await db.Blog.findByPk(params.id);
+    const resolvedParams = typeof params?.then === 'function' ? await params : params;
+    const { id } = resolvedParams;
+    const item = await (db as any).Blog.findByPk(id);
     if (!item) return NextResponse.json({ error: "Not found" }, { status: 404 });
     await item.destroy();
     return NextResponse.json({ success: true });
