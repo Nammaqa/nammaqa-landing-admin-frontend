@@ -4,17 +4,24 @@ import { useState, useEffect } from "react";
 import DataTable from "../components/DataTable";
 import Modal from "../components/Modal";
 import ImageUpload from "../components/ImageUpload";
+import RichTextEditor from "../components/RichTextEditor";
 
 export default function BlogsPage() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState<any>({});
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchItems = async () => {
-    const res = await fetch(`/api/blogs`);
-    const json = await res.json();
-    setData(json);
+    setIsLoading(true);
+    try {
+      const res = await fetch(`/api/blogs`);
+      const json = await res.json();
+      setData(Array.isArray(json) ? json : []);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -69,6 +76,7 @@ export default function BlogsPage() {
         onCreate={handleOpenCreate}
         onEdit={handleOpenEdit}
         onDelete={handleDelete}
+        isLoading={isLoading}
       />
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingId ? "Edit Blog" : "Create Blog"}>
@@ -90,7 +98,7 @@ export default function BlogsPage() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-400 mb-1">Description</label>
-            <textarea required className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white min-h-[100px]" value={formData.blog_description || ""} onChange={(e) => setFormData({ ...formData, blog_description: e.target.value })} />
+            <RichTextEditor value={formData.blog_description || ""} onChange={(val) => setFormData({ ...formData, blog_description: val })} />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-400 mb-1">External Link (Optional)</label>

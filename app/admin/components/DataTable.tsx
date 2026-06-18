@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Edit2, Trash2, Plus, Search, ChevronLeft, ChevronRight } from "lucide-react";
+import { Edit2, Trash2, Plus, Search, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
 
 interface Column {
   key: string;
@@ -15,6 +15,7 @@ interface DataTableProps {
   onDelete: (id: string | number) => void;
   onCreate: () => void;
   itemsPerPage?: number;
+  isLoading?: boolean;
 }
 
 export default function DataTable({ 
@@ -24,7 +25,8 @@ export default function DataTable({
   onEdit, 
   onDelete, 
   onCreate,
-  itemsPerPage = 10 
+  itemsPerPage = 10,
+  isLoading = false
 }: DataTableProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -94,7 +96,16 @@ export default function DataTable({
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-700/50">
-            {paginatedData.length === 0 ? (
+            {isLoading ? (
+              <tr>
+                <td colSpan={columns.length + 1} className="px-6 py-14 text-center text-gray-400">
+                  <div className="flex flex-col items-center justify-center gap-3">
+                    <Loader2 className="w-6 h-6 animate-spin text-blue-400" />
+                    <span className="text-sm font-medium">Loading data...</span>
+                  </div>
+                </td>
+              </tr>
+            ) : paginatedData.length === 0 ? (
               <tr>
                 <td colSpan={columns.length + 1} className="px-6 py-8 text-center text-gray-500">
                   {searchQuery ? "No matches found." : "No records found."}

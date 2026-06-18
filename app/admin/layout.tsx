@@ -6,7 +6,9 @@ import {
   Trophy, 
   Image as ImageIcon, 
   LogOut,
-  FileText
+  FileText,
+  Mail,
+  MessageSquare
 } from "lucide-react";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
@@ -78,6 +80,18 @@ export default async function AdminLayout({
               <Link href="/admin/gallery" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700/50 transition-colors text-gray-300 hover:text-white group">
                 <ImageIcon className="w-5 h-5 text-pink-400 group-hover:scale-110 transition-transform" />
                 <span>Gallery</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="/admin/newsletter" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700/50 transition-colors text-gray-300 hover:text-white group">
+                <Mail className="w-5 h-5 text-cyan-400 group-hover:scale-110 transition-transform" />
+                <span>Newsletter</span>
+              </Link>
+            </li>
+            <li>
+              <Link href="/admin/contact-messages" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700/50 transition-colors text-gray-300 hover:text-white group">
+                <MessageSquare className="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform" />
+                <span>Message Us</span>
               </Link>
             </li>
           </ul>

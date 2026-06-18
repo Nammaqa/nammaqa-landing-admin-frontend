@@ -6,15 +6,21 @@ import Modal from "../components/Modal";
 import ImageUpload from "../components/ImageUpload";
 
 export default function SuccessStoriesPage() {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState<any>({});
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchItems = async () => {
-    const res = await fetch(`/api/success-stories`);
-    const json = await res.json();
-    setData(json);
+    setIsLoading(true);
+    try {
+      const res = await fetch(`/api/success-stories`);
+      const json = await res.json();
+      setData(Array.isArray(json) ? json : []);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -70,6 +76,7 @@ export default function SuccessStoriesPage() {
         onCreate={handleOpenCreate}
         onEdit={handleOpenEdit}
         onDelete={handleDelete}
+        isLoading={isLoading}
       />
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingId ? "Edit Success Story" : "Create Success Story"}>

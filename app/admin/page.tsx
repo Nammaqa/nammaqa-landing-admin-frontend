@@ -10,7 +10,7 @@ export default async function AdminDashboard() {
         Welcome to NammaQA Admin
       </h1>
       <p className="text-gray-400 text-lg mb-8 text-center max-w-2xl">
-        Manage your meetups, workshops, special events, blogs, success stories, and gallery images from the sidebar. 
+        Manage your meetups, workshops, special events, blogs, success stories, gallery images, newsletter subscribers, and contact messages from the sidebar. 
         Select a category to view, create, edit, or delete records.
       </p>
       <div className="grid grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-4xl">
@@ -26,6 +26,14 @@ export default async function AdminDashboard() {
         <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-6 shadow-lg backdrop-blur-sm text-center col-span-2 md:col-span-1">
           <div className="text-3xl font-bold text-white mb-2">Media</div>
           <div className="text-gray-400">Upload to gallery</div>
+        </div>
+        <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-6 shadow-lg backdrop-blur-sm text-center col-span-2 md:col-span-3">
+          <div className="text-3xl font-bold text-white mb-2">Newsletter</div>
+          <div className="text-gray-400">Review and manage subscriber emails</div>
+        </div>
+        <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-6 shadow-lg backdrop-blur-sm text-center col-span-2 md:col-span-3">
+          <div className="text-3xl font-bold text-white mb-2">Message Us</div>
+          <div className="text-gray-400">Track and respond to inbound contact requests</div>
         </div>
       </div>
     </div>
