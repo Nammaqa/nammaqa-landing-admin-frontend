@@ -4,17 +4,24 @@ import { useState, useEffect } from "react";
 import DataTable from "./DataTable";
 import Modal from "./Modal";
 import ImageUpload from "./ImageUpload";
+import RichTextEditor from "./RichTextEditor";
 
 export default function NConnectManager({ title, type }: { title: string; type: string }) {
-  const [data, setData] = useState([]);
+  const [data, setData] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState<any>({ meeting_type: type });
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchItems = async () => {
-    const res = await fetch(`/api/nconnect?type=${type}`);
-    const json = await res.json();
-    setData(json);
+    setIsLoading(true);
+    try {
+      const res = await fetch(`/api/nconnect?type=${type}`);
+      const json = await res.json();
+      setData(Array.isArray(json) ? json : []);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -70,6 +77,7 @@ export default function NConnectManager({ title, type }: { title: string; type: 
         onCreate={handleOpenCreate}
         onEdit={handleOpenEdit}
         onDelete={handleDelete}
+        isLoading={isLoading}
       />
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingId ? `Edit ${title}` : `Create ${title}`}>
@@ -87,7 +95,7 @@ export default function NConnectManager({ title, type }: { title: string; type: 
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-400 mb-1">Description</label>
-            <textarea required className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white" value={formData.description || ""} onChange={(e) => setFormData({ ...formData, description: e.target.value })} />
+            <RichTextEditor value={formData.description || ""} onChange={(val) => setFormData({ ...formData, description: val })} />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>

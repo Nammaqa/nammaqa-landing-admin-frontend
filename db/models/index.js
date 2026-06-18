@@ -31,12 +31,16 @@ const NConnectModel = require('./nconnect')(sequelize, Sequelize.DataTypes);
 const BlogModel = require('./blog')(sequelize, Sequelize.DataTypes);
 const SuccessStoryModel = require('./successstory')(sequelize, Sequelize.DataTypes);
 const GalleryModel = require('./gallery')(sequelize, Sequelize.DataTypes);
+const NewsletterSubscriptionModel = require('./newslettersubscription')(sequelize, Sequelize.DataTypes);
+const ContactMessageModel = require('./contactmessage')(sequelize, Sequelize.DataTypes);
 
 db[UserModel.name] = UserModel;
 db[NConnectModel.name] = NConnectModel;
 db[BlogModel.name] = BlogModel;
 db[SuccessStoryModel.name] = SuccessStoryModel;
 db[GalleryModel.name] = GalleryModel;
+db[NewsletterSubscriptionModel.name] = NewsletterSubscriptionModel;
+db[ContactMessageModel.name] = ContactMessageModel;
 
 Object.keys(db).forEach(modelName => {
   if (db[modelName].associate) {
@@ -47,4 +51,3 @@ Object.keys(db).forEach(modelName => {
 db.sequelize = sequelize;
 db.Sequelize =  Sequelize;
 module.exports = db;
-
