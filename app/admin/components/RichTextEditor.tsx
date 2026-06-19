@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Bold,
   Italic,
@@ -17,6 +17,7 @@ type RichTextEditorProps = {
   onChange: (value: string) => void;
   placeholder?: string;
   minHeight?: number;
+  maxLength?: number;
 };
 
 const toolbarButtons = [
@@ -32,18 +33,39 @@ export default function RichTextEditor({
   onChange,
   placeholder = "Write rich text...",
   minHeight = 140,
+  maxLength,
 }: RichTextEditorProps) {
   const editorRef = useRef<HTMLDivElement>(null);
+  const [charCount, setCharCount] = useState(0);
 
   useEffect(() => {
     if (!editorRef.current) return;
     if (editorRef.current.innerHTML !== value) {
       editorRef.current.innerHTML = value || "";
+      setCharCount(editorRef.current.innerText.length || 0);
     }
   }, [value]);
 
   const emitChange = () => {
+    const text = editorRef.current?.innerText || "";
+    setCharCount(text.length);
     onChange(editorRef.current?.innerHTML || "");
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (maxLength && charCount >= maxLength) {
+      // Allow backspace, delete, arrow keys, and combinations with Ctrl/Cmd
+      if (
+        e.key === "Backspace" ||
+        e.key === "Delete" ||
+        e.key.startsWith("Arrow") ||
+        e.ctrlKey ||
+        e.metaKey
+      ) {
+        return;
+      }
+      e.preventDefault();
+    }
   };
 
   const runCommand = (command: string, commandValue?: string) => {
@@ -110,11 +132,17 @@ export default function RichTextEditor({
           aria-multiline="true"
           onInput={emitChange}
           onBlur={emitChange}
+          onKeyDown={handleKeyDown}
           className="rich-text-editor min-h-[140px] w-full overflow-y-auto p-3 text-sm leading-6 text-white outline-none"
           style={{ minHeight }}
           data-placeholder={placeholder}
         />
       </div>
+      {maxLength && (
+        <div className={`text-xs mt-1 text-right px-1 ${charCount > maxLength ? "text-red-500" : "text-gray-400"}`}>
+          {charCount} / {maxLength}
+        </div>
+      )}
     </div>
   );
 }

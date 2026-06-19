@@ -12,6 +12,7 @@ export default function NConnectManager({ title, type }: { title: string; type: 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState<any>({ meeting_type: type });
   const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
 
   const fetchItems = async () => {
     setIsLoading(true);
@@ -48,17 +49,22 @@ export default function NConnectManager({ title, type }: { title: string; type: 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSaving(true);
     const method = editingId ? "PUT" : "POST";
     const url = editingId ? `/api/nconnect/${editingId}` : "/api/nconnect";
 
-    await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
+    try {
+      await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-    setIsModalOpen(false);
-    fetchItems();
+      setIsModalOpen(false);
+      fetchItems();
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const columns = [
@@ -95,7 +101,7 @@ export default function NConnectManager({ title, type }: { title: string; type: 
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-400 mb-1">Description</label>
-            <RichTextEditor value={formData.description || ""} onChange={(val) => setFormData({ ...formData, description: val })} />
+            <RichTextEditor value={formData.description || ""} onChange={(val) => setFormData({ ...formData, description: val })} maxLength={type === "workshop" ? 250 : undefined} />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -132,8 +138,19 @@ export default function NConnectManager({ title, type }: { title: string; type: 
             </div>
           </div>
           <div className="flex justify-end pt-4">
-            <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded shadow">
-              Save
+            <button 
+              type="submit" 
+              disabled={isSaving || (type === "workshop" && (formData.description?.replace(/<[^>]*>?/gm, '')?.length || 0) > 250)}
+              className={`px-6 py-2 rounded shadow ${isSaving || (type === "workshop" && (formData.description?.replace(/<[^>]*>?/gm, '')?.length || 0) > 250) ? "bg-gray-600 text-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 text-white"}`}
+            >
+              {isSaving ? (
+                <span className="flex items-center gap-2">
+                  <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
+                  Saving...
+                </span>
+              ) : (
+                "Save"
+              )}
             </button>
           </div>
         </form>
