@@ -154,7 +154,6 @@ export default function NewsletterPage() {
         columns={columns}
         data={data}
         onCreate={handleOpenCreate}
-        onEdit={handleOpenEdit}
         onDelete={handleDelete}
         isLoading={isLoading}
       />

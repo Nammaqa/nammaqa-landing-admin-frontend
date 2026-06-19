@@ -172,7 +172,14 @@ export default function ContactMessagesPage() {
         columns={columns}
         data={data}
         onCreate={handleOpenCreate}
-        onEdit={handleOpenEdit}
+        onPreview={(item: ContactMessageItem) => {
+          const w = window.open("", "_blank");
+          if (!w) return;
+          const received = item.createdAt ? new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(item.createdAt)) : '';
+          const html = `<!doctype html><html><head><meta charset="utf-8"><title>Message from ${item.full_name||item.email}</title><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;margin:20px;color:#111;background:#fff"><h2 style="margin-bottom:8px">Message from ${item.full_name||item.email}</h2><p style="color:#666;margin:0 0 8px">Received: ${received}</p><p style="margin-top:12px;white-space:pre-wrap">${(item.message||'').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</p><hr style="margin:18px 0"><p><strong>Sender email:</strong> ${item.email||''}</p></body></html>`;
+          w.document.write(html);
+          w.document.close();
+        }}
         onDelete={handleDelete}
         isLoading={isLoading}
       />
