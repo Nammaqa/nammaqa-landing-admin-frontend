@@ -134,17 +134,6 @@ export default function NewsletterPage() {
             </div>
           </div>
         </div>
-        <div className="bg-gray-800 border border-gray-700 rounded-2xl p-5 shadow-xl">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-yellow-500/10 text-yellow-400">
-              <AlertCircle className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-400">Public Endpoint</p>
-              <p className="text-sm font-semibold text-white">/api/newsletter</p>
-            </div>
-          </div>
-        </div>
       </div>
 
       {statusMessage ? (
