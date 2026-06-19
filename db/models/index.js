@@ -1,38 +1,40 @@
 'use strict';
 
-const Sequelize = require('sequelize');
-const process = require('process');
-const env = process.env.NODE_ENV || 'development';
-const config = require('../config/config.js')[env];
+import Sequelize from 'sequelize';
+import configLoader from '../config/config.js';
+import UserFactory from './user.js';
+import NConnectFactory from './nconnect.js';
+import BlogFactory from './blog.js';
+import SuccessStoryFactory from './successstory.js';
+import GalleryFactory from './gallery.js';
+import NewsletterSubscriptionFactory from './newslettersubscription.js';
+import ContactMessageFactory from './contactmessage.js';
 
-let pg;
-try {
-  pg = require('pg');
-} catch (err) {
-  throw new Error('Please install the `pg` package: npm install pg');
-}
+const env = process.env.NODE_ENV || 'development';
+const config = configLoader[env];
+
 const db = {};
 
 let sequelize;
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], {
     ...config,
-    dialectModule: pg
+    dialectModule: config.dialectModule
   });
 } else {
   sequelize = new Sequelize(config.database, config.username, config.password, {
     ...config,
-    dialectModule: pg
+    dialectModule: config.dialectModule
   });
 }
 
-const UserModel = require('./user')(sequelize, Sequelize.DataTypes);
-const NConnectModel = require('./nconnect')(sequelize, Sequelize.DataTypes);
-const BlogModel = require('./blog')(sequelize, Sequelize.DataTypes);
-const SuccessStoryModel = require('./successstory')(sequelize, Sequelize.DataTypes);
-const GalleryModel = require('./gallery')(sequelize, Sequelize.DataTypes);
-const NewsletterSubscriptionModel = require('./newslettersubscription')(sequelize, Sequelize.DataTypes);
-const ContactMessageModel = require('./contactmessage')(sequelize, Sequelize.DataTypes);
+const UserModel = UserFactory(sequelize, Sequelize.DataTypes);
+const NConnectModel = NConnectFactory(sequelize, Sequelize.DataTypes);
+const BlogModel = BlogFactory(sequelize, Sequelize.DataTypes);
+const SuccessStoryModel = SuccessStoryFactory(sequelize, Sequelize.DataTypes);
+const GalleryModel = GalleryFactory(sequelize, Sequelize.DataTypes);
+const NewsletterSubscriptionModel = NewsletterSubscriptionFactory(sequelize, Sequelize.DataTypes);
+const ContactMessageModel = ContactMessageFactory(sequelize, Sequelize.DataTypes);
 
 db[UserModel.name] = UserModel;
 db[NConnectModel.name] = NConnectModel;
@@ -49,5 +51,6 @@ Object.keys(db).forEach(modelName => {
 });
 
 db.sequelize = sequelize;
-db.Sequelize =  Sequelize;
-module.exports = db;
+db.Sequelize = Sequelize;
+
+export default db;
