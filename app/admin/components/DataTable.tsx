@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Edit2, Trash2, Plus, Search, ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { Edit2, Trash2, Plus, Search, ChevronLeft, ChevronRight, Loader2, Eye } from "lucide-react";
 
 interface Column {
   key: string;
@@ -11,7 +11,8 @@ interface DataTableProps {
   title: string;
   columns: Column[];
   data: any[];
-  onEdit: (item: any) => void;
+  onEdit?: (item: any) => void;
+  onPreview?: (item: any) => void;
   onDelete: (id: string | number) => void;
   onCreate: () => void;
   itemsPerPage?: number;
@@ -23,6 +24,7 @@ export default function DataTable({
   columns, 
   data, 
   onEdit, 
+  onPreview,
   onDelete, 
   onCreate,
   itemsPerPage = 10,
@@ -115,19 +117,33 @@ export default function DataTable({
               paginatedData.map((item, idx) => (
                 <tr key={item.id || idx} className="hover:bg-gray-700/30 transition-colors">
                   {columns.map((col) => (
-                    <td key={col.key} className="px-6 py-4 whitespace-nowrap">
+                    <td
+                      key={col.key}
+                      className={`px-6 py-4 ${['address', 'description', 'title', 'image_title'].includes(col.key) ? 'whitespace-normal break-words max-w-[28rem]' : 'whitespace-nowrap'}`}
+                    >
                       {col.render ? col.render(item[col.key], item) : item[col.key]}
                     </td>
                   ))}
                   <td className="px-6 py-4 whitespace-nowrap text-right">
                     <div className="flex items-center justify-end gap-3">
-                      <button
-                        onClick={() => onEdit(item)}
-                        className="p-2 text-blue-400 hover:bg-blue-400/10 rounded-lg transition-colors"
-                        title="Edit"
-                      >
-                        <Edit2 className="w-4 h-4" />
-                      </button>
+                      {onPreview ? (
+                        <button
+                          onClick={() => onPreview(item)}
+                          className="p-2 text-gray-300 hover:bg-gray-300/5 rounded-lg transition-colors"
+                          title="Preview"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                      ) : null}
+                      {onEdit ? (
+                        <button
+                          onClick={() => onEdit(item)}
+                          className="p-2 text-blue-400 hover:bg-blue-400/10 rounded-lg transition-colors"
+                          title="Edit"
+                        >
+                          <Edit2 className="w-4 h-4" />
+                        </button>
+                      ) : null}
                       <button
                         onClick={() => onDelete(item.id)}
                         className="p-2 text-red-400 hover:bg-red-400/10 rounded-lg transition-colors"
