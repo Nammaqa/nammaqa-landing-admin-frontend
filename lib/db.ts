@@ -1,3 +1,3 @@
-import db from "../db/models";
+const db = require("../db/models");
 
 export default db;
