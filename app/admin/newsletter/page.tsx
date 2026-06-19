@@ -147,6 +147,7 @@ export default function NewsletterPage() {
         </div>
       </div>
 
+
       {statusMessage ? (
         <div className="rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-300">
           {statusMessage}
