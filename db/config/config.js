@@ -1,11 +1,18 @@
-const path = require('path');
-require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+import dotenv from 'dotenv';
+import pg from 'pg';
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+
+export default {
   development: {
     use_env_variable: 'DATABASE_URL',
     dialect: 'postgres',
-    dialectModule: require('pg'),
+    dialectModule: pg,
     dialectOptions: {
       ssl: {
         require: true,
@@ -16,7 +23,7 @@ module.exports = {
   test: {
     use_env_variable: 'DATABASE_URL',
     dialect: 'postgres',
-    dialectModule: require('pg'),
+    dialectModule: pg,
     dialectOptions: {
       ssl: {
         require: true,
@@ -27,7 +34,7 @@ module.exports = {
   production: {
     use_env_variable: 'DATABASE_URL',
     dialect: 'postgres',
-    dialectModule: require('pg'),
+    dialectModule: pg,
     dialectOptions: {
       ssl: {
         require: true,
