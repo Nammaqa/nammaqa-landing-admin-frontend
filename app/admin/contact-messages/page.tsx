@@ -26,6 +26,7 @@ export default function ContactMessagesPage() {
   const [formError, setFormError] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
 
   const fetchItems = async () => {
     setIsLoading(true);
@@ -74,28 +75,33 @@ export default function ContactMessagesPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSaving(true);
     setFormError("");
     setStatusMessage("");
 
     const method = editingId ? "PUT" : "POST";
     const url = editingId ? `/api/contact-messages/${editingId}` : "/api/contact-messages";
 
-    const res = await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-    const json = await res.json();
+      const json = await res.json();
 
-    if (!res.ok) {
-      setFormError(json?.error || "Something went wrong.");
-      return;
+      if (!res.ok) {
+        setFormError(json?.error || "Something went wrong.");
+        return;
+      }
+
+      setStatusMessage(editingId ? "Message updated successfully." : "Message saved successfully.");
+      setIsModalOpen(false);
+      fetchItems();
+    } finally {
+      setIsSaving(false);
     }
-
-    setStatusMessage(editingId ? "Message updated successfully." : "Message saved successfully.");
-    setIsModalOpen(false);
-    fetchItems();
   };
 
   const columns = [
@@ -216,9 +222,17 @@ export default function ContactMessagesPage() {
           <div className="flex justify-end pt-4">
             <button
               type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded shadow"
+              disabled={isSaving}
+              className={`px-6 py-2 rounded shadow ${isSaving ? "bg-gray-600 text-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 text-white"}`}
             >
-              Save
+              {isSaving ? (
+                <span className="flex items-center gap-2">
+                  <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
+                  Saving...
+                </span>
+              ) : (
+                "Save"
+              )}
             </button>
           </div>
         </form>

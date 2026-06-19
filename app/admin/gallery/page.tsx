@@ -11,6 +11,7 @@ export default function GalleryPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState<any>({});
   const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
 
   const fetchItems = async () => {
     setIsLoading(true);
@@ -47,17 +48,22 @@ export default function GalleryPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSaving(true);
     const method = editingId ? "PUT" : "POST";
     const url = editingId ? `/api/gallery/${editingId}` : "/api/gallery";
 
-    await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-    });
+    try {
+      await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
 
-    setIsModalOpen(false);
-    fetchItems();
+      setIsModalOpen(false);
+      fetchItems();
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const columns = [
@@ -91,8 +97,19 @@ export default function GalleryPage() {
             <input type="text" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white" value={formData.image_title || ""} onChange={(e) => setFormData({ ...formData, image_title: e.target.value })} />
           </div>
           <div className="flex justify-end pt-4">
-            <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded shadow">
-              Save
+            <button 
+              type="submit" 
+              disabled={isSaving}
+              className={`px-6 py-2 rounded shadow ${isSaving ? "bg-gray-600 text-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 text-white"}`}
+            >
+              {isSaving ? (
+                <span className="flex items-center gap-2">
+                  <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
+                  Saving...
+                </span>
+              ) : (
+                "Save"
+              )}
             </button>
           </div>
         </form>
