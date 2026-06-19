@@ -95,7 +95,7 @@ export default function NConnectManager({ title, type }: { title: string; type: 
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-400 mb-1">Description</label>
-            <RichTextEditor value={formData.description || ""} onChange={(val) => setFormData({ ...formData, description: val })} />
+            <RichTextEditor value={formData.description || ""} onChange={(val) => setFormData({ ...formData, description: val })} maxLength={type === "workshop" ? 500 : undefined} />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -132,7 +132,11 @@ export default function NConnectManager({ title, type }: { title: string; type: 
             </div>
           </div>
           <div className="flex justify-end pt-4">
-            <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded shadow">
+            <button 
+              type="submit" 
+              disabled={type === "workshop" && (formData.description?.replace(/<[^>]*>?/gm, '')?.length || 0) > 500}
+              className={`px-6 py-2 rounded shadow ${type === "workshop" && (formData.description?.replace(/<[^>]*>?/gm, '')?.length || 0) > 500 ? "bg-gray-600 text-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 text-white"}`}
+            >
               Save
             </button>
           </div>
