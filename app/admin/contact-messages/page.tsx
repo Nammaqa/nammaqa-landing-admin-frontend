@@ -27,6 +27,7 @@ export default function ContactMessagesPage() {
   const [statusMessage, setStatusMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [previewItem, setPreviewItem] = useState<ContactMessageItem | null>(null);
 
   const fetchItems = async () => {
     setIsLoading(true);
@@ -172,14 +173,7 @@ export default function ContactMessagesPage() {
         columns={columns}
         data={data}
         onCreate={handleOpenCreate}
-        onPreview={(item: ContactMessageItem) => {
-          const w = window.open("", "_blank");
-          if (!w) return;
-          const received = item.createdAt ? new Intl.DateTimeFormat('en-IN', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }).format(new Date(item.createdAt)) : '';
-          const html = `<!doctype html><html><head><meta charset="utf-8"><title>Message from ${item.full_name||item.email}</title><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;margin:20px;color:#111;background:#fff"><h2 style="margin-bottom:8px">Message from ${item.full_name||item.email}</h2><p style="color:#666;margin:0 0 8px">Received: ${received}</p><p style="margin-top:12px;white-space:pre-wrap">${(item.message||'').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</p><hr style="margin:18px 0"><p><strong>Sender email:</strong> ${item.email||''}</p></body></html>`;
-          w.document.write(html);
-          w.document.close();
-        }}
+        onPreview={(item: ContactMessageItem) => setPreviewItem(item)}
         onDelete={handleDelete}
         isLoading={isLoading}
       />
@@ -243,6 +237,27 @@ export default function ContactMessagesPage() {
             </button>
           </div>
         </form>
+      </Modal>
+
+      <Modal
+        isOpen={!!previewItem}
+        onClose={() => setPreviewItem(null)}
+        title={previewItem ? `Message from ${previewItem.full_name || previewItem.email}` : "Preview"}
+      >
+        {previewItem ? (
+          <div className="space-y-3">
+            <div className="text-sm text-gray-400">Received</div>
+            <div className="text-sm text-white">{previewItem.createdAt ? new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }).format(new Date(previewItem.createdAt)) : ""}</div>
+            <div className="pt-2">
+              <div className="text-sm text-gray-400">Email</div>
+              <div className="text-sm text-white break-words">{previewItem.email}</div>
+            </div>
+            <div>
+              <div className="text-sm text-gray-400">Message</div>
+              <pre className="whitespace-pre-wrap text-sm text-white bg-gray-900 p-3 rounded mt-1">{previewItem.message}</pre>
+            </div>
+          </div>
+        ) : null}
       </Modal>
     </div>
   );
