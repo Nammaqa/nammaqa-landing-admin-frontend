@@ -1,3 +1,3 @@
-import db from "../db/models/index.js";
+import db from "../models/index.js";
 
 export default db;

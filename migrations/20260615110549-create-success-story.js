@@ -1,45 +1,29 @@
 'use strict';
 /** @type {import('sequelize-cli').Migration} */
-module.exports = {
-  async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('nconnect', {
+export async function up(queryInterface, Sequelize) {
+    await queryInterface.createTable('success_stories', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      imageurl: {
+      student_name: {
         type: Sequelize.STRING
       },
-      meeting_type: {
+      student_image: {
         type: Sequelize.STRING
       },
-      start_date: {
-        type: Sequelize.DATE
-      },
-      end_date: {
-        type: Sequelize.DATE
-      },
-      start_time: {
-        type: Sequelize.TIME
-      },
-      end_time: {
-        type: Sequelize.TIME
-      },
-      address: {
+      student_type: {
         type: Sequelize.STRING
       },
-      participants: {
-        type: Sequelize.INTEGER
-      },
-      title: {
+      placed_company: {
         type: Sequelize.STRING
       },
-      description: {
+      feedback: {
         type: Sequelize.TEXT
       },
-      link: {
+      student_package: {
         type: Sequelize.STRING
       },
       createdAt: {
@@ -51,8 +35,8 @@ module.exports = {
         type: Sequelize.DATE
       }
     });
-  },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('nconnect');
+}
+export async function down(queryInterface, Sequelize) {
+    await queryInterface.dropTable('success_stories');
   }
-};
+
