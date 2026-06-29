@@ -1,19 +1,17 @@
 'use strict';
 /** @type {import('sequelize-cli').Migration} */
-module.exports = {
-  async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('gallery', {
+export async function up(queryInterface, Sequelize) {
+    await queryInterface.createTable('NewsletterSubscription', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      image_url: {
-        type: Sequelize.STRING
-      },
-      image_title: {
-        type: Sequelize.STRING
+      email: {
+        allowNull: false,
+        type: Sequelize.STRING,
+        unique: true
       },
       createdAt: {
         allowNull: false,
@@ -24,8 +22,8 @@ module.exports = {
         type: Sequelize.DATE
       }
     });
-  },
-  async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('gallery');
+}
+export async function down(queryInterface, Sequelize) {
+    await queryInterface.dropTable('NewsletterSubscription');
   }
-};
+
