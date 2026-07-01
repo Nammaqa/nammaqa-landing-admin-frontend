@@ -122,8 +122,8 @@ export default function NewsletterPage() {
               <Mail className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">Total Subscribers</p>
-              <p className="text-2xl font-bold text-white">{isLoading ? "..." : data.length}</p>
+              <p className="text-sm text-gray-500">Total Subscribers</p>
+              <p className="text-2xl font-bold text-gray-900">{isLoading ? "..." : data.length}</p>
             </div>
           </div>
         </div>
@@ -133,8 +133,8 @@ export default function NewsletterPage() {
               <CheckCircle2 className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">Latest Signup</p>
-              <p className="text-sm font-semibold text-white break-all">
+              <p className="text-sm text-gray-500">Latest Signup</p>
+              <p className="text-sm font-semibold text-gray-900 break-all">
                 {isLoading ? "Loading..." : data[0]?.email || "No subscriptions yet"}
               </p>
             </div>
@@ -165,13 +165,13 @@ export default function NewsletterPage() {
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">
+            <label className="block text-sm font-medium text-gray-600 mb-1">
               Email Address
             </label>
             <input
               required
               type="email"
-              className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white"
+              className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="name@example.com"

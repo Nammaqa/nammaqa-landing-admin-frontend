@@ -86,15 +86,15 @@ export default function GalleryPage() {
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingId ? "Edit Image" : "Upload Image"}>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Image Upload</label>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Image Upload</label>
             <ImageUpload 
               value={formData.image_url || ""} 
               onChange={(url) => setFormData({ ...formData, image_url: url })} 
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Title (Optional)</label>
-            <input type="text" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white" value={formData.image_title || ""} onChange={(e) => setFormData({ ...formData, image_title: e.target.value })} />
+            <label className="block text-sm font-medium text-gray-600 mb-1">Title (Optional)</label>
+            <input type="text" className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900" value={formData.image_title || ""} onChange={(e) => setFormData({ ...formData, image_title: e.target.value })} />
           </div>
           <div className="flex justify-end pt-4">
             <button 

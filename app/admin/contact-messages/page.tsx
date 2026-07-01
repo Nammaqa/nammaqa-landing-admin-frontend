@@ -162,8 +162,8 @@ export default function ContactMessagesPage() {
               <Inbox className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">Total Messages</p>
-              <p className="text-2xl font-bold text-white">{isLoading ? "..." : data.length}</p>
+              <p className="text-sm text-gray-500">Total Messages</p>
+              <p className="text-2xl font-bold text-gray-900">{isLoading ? "..." : data.length}</p>
             </div>
           </div>
         </div>
@@ -173,8 +173,8 @@ export default function ContactMessagesPage() {
               <MessageSquare className="w-5 h-5" />
             </div>
             <div>
-              <p className="text-sm text-gray-400">Latest Sender</p>
-              <p className="text-sm font-semibold text-white break-all">
+              <p className="text-sm text-gray-500">Latest Sender</p>
+              <p className="text-sm font-semibold text-gray-900 break-all">
                 {isLoading ? "Loading..." : data[0]?.email || "No messages yet"}
               </p>
             </div>
@@ -206,7 +206,7 @@ export default function ContactMessagesPage() {
       >
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Full name</label>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Full name</label>
             <input
               required
               type="text"
@@ -216,7 +216,7 @@ export default function ContactMessagesPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Email</label>
             <input
               required
               type="email"
@@ -226,7 +226,7 @@ export default function ContactMessagesPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Contact Number</label>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Contact Number</label>
             <input
               required
               type="tel"
@@ -236,10 +236,10 @@ export default function ContactMessagesPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Message</label>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Message</label>
             <textarea
               required
-              className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white min-h-[140px]"
+              className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900 min-h-[140px]"
               value={formData.message}
               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
             />
@@ -277,23 +277,23 @@ export default function ContactMessagesPage() {
       >
         {previewItem ? (
           <div className="space-y-3">
-            <div className="text-sm text-gray-400">Received</div>
-            <div className="text-sm text-white">{previewItem.createdAt ? new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }).format(new Date(previewItem.createdAt)) : ""}</div>
+            <div className="text-sm text-gray-500">Received</div>
+            <div className="text-sm text-gray-900">{previewItem.createdAt ? new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }).format(new Date(previewItem.createdAt)) : ""}</div>
             <div className="pt-2">
-              <div className="text-sm text-gray-400">Email</div>
-              <div className="text-sm text-white break-words">{previewItem.email}</div>
+              <div className="text-sm text-gray-500">Email</div>
+              <div className="text-sm text-gray-900 break-words">{previewItem.email}</div>
             </div>
             <div>
-              <div className="text-sm text-gray-400">Contact Number</div>
-              <div className="text-sm text-white break-words">{previewItem.contact_number || "-"}</div>
+              <div className="text-sm text-gray-500">Contact Number</div>
+              <div className="text-sm text-gray-900 break-words">{previewItem.contact_number || "-"}</div>
             </div>
             <div>
-              <div className="text-sm text-gray-400">OTP Verified</div>
+              <div className="text-sm text-gray-500">OTP Verified</div>
               <div className={previewItem.otpverified ? "text-sm text-green-300" : "text-sm text-yellow-300"}>{previewItem.otpverified ? "Verified" : "Pending"}</div>
             </div>
             <div>
-              <div className="text-sm text-gray-400">Message</div>
-              <pre className="whitespace-pre-wrap text-sm text-white bg-gray-900 p-3 rounded mt-1">{previewItem.message}</pre>
+              <div className="text-sm text-gray-500">Message</div>
+              <pre className="whitespace-pre-wrap text-sm text-gray-900 bg-gray-50 p-3 rounded mt-1">{previewItem.message}</pre>
             </div>
           </div>
         ) : null}

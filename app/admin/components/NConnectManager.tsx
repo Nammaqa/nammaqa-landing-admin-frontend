@@ -89,52 +89,52 @@ export default function NConnectManager({ title, type }: { title: string; type: 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingId ? `Edit ${title}` : `Create ${title}`}>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Image URL</label>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Image URL</label>
             <ImageUpload 
               value={formData.imageurl || ""} 
               onChange={(url) => setFormData({ ...formData, imageurl: url })} 
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Title</label>
-            <input required type="text" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white" value={formData.title || ""} onChange={(e) => setFormData({ ...formData, title: e.target.value })} />
+            <label className="block text-sm font-medium text-gray-600 mb-1">Title</label>
+            <input required type="text" className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900" value={formData.title || ""} onChange={(e) => setFormData({ ...formData, title: e.target.value })} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Description</label>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Description</label>
             <RichTextEditor value={formData.description || ""} onChange={(val) => setFormData({ ...formData, description: val })} maxLength={type === "workshop" ? 250 : undefined} />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">Start Date</label>
-              <input type="date" required className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white" value={formData.start_date ? new Date(formData.start_date).toISOString().split('T')[0] : ""} onChange={(e) => setFormData({ ...formData, start_date: e.target.value })} />
+              <label className="block text-sm font-medium text-gray-600 mb-1">Start Date</label>
+              <input type="date" required className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900" value={formData.start_date ? new Date(formData.start_date).toISOString().split('T')[0] : ""} onChange={(e) => setFormData({ ...formData, start_date: e.target.value })} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">End Date</label>
-              <input type="date" required className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white" value={formData.end_date ? new Date(formData.end_date).toISOString().split('T')[0] : ""} onChange={(e) => setFormData({ ...formData, end_date: e.target.value })} />
+              <label className="block text-sm font-medium text-gray-600 mb-1">End Date</label>
+              <input type="date" required className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900" value={formData.end_date ? new Date(formData.end_date).toISOString().split('T')[0] : ""} onChange={(e) => setFormData({ ...formData, end_date: e.target.value })} />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">Start Time</label>
-              <input type="time" required className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white" value={formData.start_time || ""} onChange={(e) => setFormData({ ...formData, start_time: e.target.value })} />
+              <label className="block text-sm font-medium text-gray-600 mb-1">Start Time</label>
+              <input type="time" required className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900" value={formData.start_time || ""} onChange={(e) => setFormData({ ...formData, start_time: e.target.value })} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">End Time</label>
-              <input type="time" required className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white" value={formData.end_time || ""} onChange={(e) => setFormData({ ...formData, end_time: e.target.value })} />
+              <label className="block text-sm font-medium text-gray-600 mb-1">End Time</label>
+              <input type="time" required className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900" value={formData.end_time || ""} onChange={(e) => setFormData({ ...formData, end_time: e.target.value })} />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Address</label>
-            <input required type="text" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white" value={formData.address || ""} onChange={(e) => setFormData({ ...formData, address: e.target.value })} />
+            <label className="block text-sm font-medium text-gray-600 mb-1">Address</label>
+            <input required type="text" className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900" value={formData.address || ""} onChange={(e) => setFormData({ ...formData, address: e.target.value })} />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">Participants Limit</label>
-              <input required type="number" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white" value={formData.participants || ""} onChange={(e) => setFormData({ ...formData, participants: parseInt(e.target.value) })} />
+              <label className="block text-sm font-medium text-gray-600 mb-1">Participants Limit</label>
+              <input required type="number" className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900" value={formData.participants || ""} onChange={(e) => setFormData({ ...formData, participants: parseInt(e.target.value) })} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">Registration Link</label>
-              <input type="url" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white" value={formData.link || ""} onChange={(e) => setFormData({ ...formData, link: e.target.value })} />
+              <label className="block text-sm font-medium text-gray-600 mb-1">Registration Link</label>
+              <input type="url" className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900" value={formData.link || ""} onChange={(e) => setFormData({ ...formData, link: e.target.value })} />
             </div>
           </div>
           <div className="flex justify-end pt-4">

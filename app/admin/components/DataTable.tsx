@@ -59,9 +59,9 @@ export default function DataTable({
   }, [filteredData, currentPage, itemsPerPage]);
 
   return (
-    <div className="bg-gray-800 border border-gray-700 rounded-2xl shadow-xl overflow-hidden flex flex-col">
-      <div className="p-6 border-b border-gray-700 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 bg-gray-800/50">
-        <h2 className="text-xl font-bold text-white">{title}</h2>
+    <div className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden flex flex-col">
+      <div className="p-6 border-b border-gray-200 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 bg-gray-50">
+        <h2 className="text-xl font-bold text-gray-900">{title}</h2>
         
         <div className="flex flex-col sm:flex-row items-center gap-4">
           <div className="relative w-full sm:w-64">
@@ -71,7 +71,7 @@ export default function DataTable({
               placeholder="Search..." 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 bg-gray-900 border border-gray-600 rounded-lg text-sm text-white focus:outline-none focus:border-blue-500 transition-colors"
+              className="w-full pl-10 pr-4 py-2 bg-white border border-gray-300 rounded-lg text-sm text-gray-900 focus:outline-none focus:border-blue-500 transition-colors"
             />
           </div>
           
@@ -86,8 +86,8 @@ export default function DataTable({
       </div>
 
       <div className="overflow-x-auto flex-1">
-        <table className="w-full text-left text-sm text-gray-400">
-          <thead className="text-xs text-gray-400 uppercase bg-gray-900/50">
+        <table className="w-full text-left text-sm text-gray-700">
+          <thead className="text-xs text-gray-500 uppercase bg-gray-50">
             <tr>
               {columns.map((col) => (
                 <th key={col.key} className="px-6 py-4 font-semibold tracking-wider">
@@ -100,9 +100,9 @@ export default function DataTable({
           <tbody className="divide-y divide-gray-700/50">
             {isLoading ? (
               <tr>
-                <td colSpan={columns.length + 1} className="px-6 py-14 text-center text-gray-400">
+                <td colSpan={columns.length + 1} className="px-6 py-14 text-center text-gray-500">
                   <div className="flex flex-col items-center justify-center gap-3">
-                    <Loader2 className="w-6 h-6 animate-spin text-blue-400" />
+                    <Loader2 className="w-6 h-6 animate-spin text-blue-500" />
                     <span className="text-sm font-medium">Loading data...</span>
                   </div>
                 </td>
@@ -115,7 +115,7 @@ export default function DataTable({
               </tr>
             ) : (
               paginatedData.map((item, idx) => (
-                <tr key={item.id || idx} className="hover:bg-gray-700/30 transition-colors">
+                <tr key={item.id || idx} className="hover:bg-gray-50 transition-colors">
                   {columns.map((col) => (
                     <td
                       key={col.key}
@@ -129,7 +129,7 @@ export default function DataTable({
                       {onPreview ? (
                         <button
                           onClick={() => onPreview(item)}
-                          className="p-2 text-gray-300 hover:bg-gray-300/5 rounded-lg transition-colors"
+                          className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
                           title="Preview"
                         >
                           <Eye className="w-4 h-4" />
@@ -138,7 +138,7 @@ export default function DataTable({
                       {onEdit ? (
                         <button
                           onClick={() => onEdit(item)}
-                          className="p-2 text-blue-400 hover:bg-blue-400/10 rounded-lg transition-colors"
+                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                           title="Edit"
                         >
                           <Edit2 className="w-4 h-4" />
@@ -146,7 +146,7 @@ export default function DataTable({
                       ) : null}
                       <button
                         onClick={() => onDelete(item.id)}
-                        className="p-2 text-red-400 hover:bg-red-400/10 rounded-lg transition-colors"
+                        className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         title="Delete"
                       >
                         <Trash2 className="w-4 h-4" />
@@ -161,19 +161,19 @@ export default function DataTable({
       </div>
 
       {/* Pagination Controls */}
-      <div className="p-4 border-t border-gray-700 bg-gray-800/50 flex items-center justify-between">
-        <div className="text-sm text-gray-400">
-          Showing <span className="font-medium text-white">{filteredData.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1}</span> to <span className="font-medium text-white">{Math.min(currentPage * itemsPerPage, filteredData.length)}</span> of <span className="font-medium text-white">{filteredData.length}</span> results
+      <div className="p-4 border-t border-gray-200 bg-gray-50 flex items-center justify-between">
+        <div className="text-sm text-gray-500">
+          Showing <span className="font-medium text-gray-900">{filteredData.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1}</span> to <span className="font-medium text-gray-900">{Math.min(currentPage * itemsPerPage, filteredData.length)}</span> of <span className="font-medium text-gray-900">{filteredData.length}</span> results
         </div>
         <div className="flex items-center gap-2">
           <button 
             onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
             disabled={currentPage === 1}
-            className="p-2 rounded-lg border border-gray-600 text-gray-300 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="p-2 rounded-lg border border-gray-300 text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
-          <span className="text-sm font-medium text-gray-300 px-2">
+          <span className="text-sm font-medium text-gray-700 px-2">
             Page {currentPage} of {totalPages}
           </span>
           <button 

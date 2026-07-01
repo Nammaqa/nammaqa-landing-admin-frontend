@@ -39,12 +39,12 @@ export default function ImageUpload({ value, onChange }: ImageUploadProps) {
   return (
     <div className="space-y-4">
       {value && (
-        <div className="relative w-full h-48 rounded-lg overflow-hidden border border-gray-700 bg-gray-900/50">
+        <div className="relative w-full h-48 rounded-lg overflow-hidden border border-gray-200 bg-gray-50">
           <img src={value} alt="Uploaded" className="w-full h-full object-cover" />
         </div>
       )}
       
-      <label className="flex items-center justify-center w-full h-32 px-4 transition bg-gray-800 border-2 border-gray-600 border-dashed rounded-lg appearance-none cursor-pointer hover:border-gray-400 focus:outline-none">
+      <label className="flex items-center justify-center w-full h-32 px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-lg appearance-none cursor-pointer hover:border-blue-400 focus:outline-none">
         <span className="flex items-center space-x-2">
           {isUploading ? (
             <Loader2 className="w-6 h-6 text-gray-400 animate-spin" />

@@ -109,33 +109,33 @@ export default function SuccessStoriesPage() {
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingId ? "Edit Success Story" : "Create Success Story"}>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Student Image</label>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Student Image</label>
             <ImageUpload
               value={formData.student_image || ""}
               onChange={(url) => setFormData({ ...formData, student_image: url })}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Student Name</label>
-            <input required type="text" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white" value={formData.student_name || ""} onChange={(e) => setFormData({ ...formData, student_name: e.target.value })} />
+            <label className="block text-sm font-medium text-gray-600 mb-1">Student Name</label>
+            <input required type="text" className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900" value={formData.student_name || ""} onChange={(e) => setFormData({ ...formData, student_name: e.target.value })} />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">Designation</label>
-              <input required type="text" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white" value={formData.student_type || ""} onChange={(e) => setFormData({ ...formData, student_type: e.target.value })} />
+              <label className="block text-sm font-medium text-gray-600 mb-1">Designation</label>
+              <input required type="text" className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900" value={formData.student_type || ""} onChange={(e) => setFormData({ ...formData, student_type: e.target.value })} />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">Package</label>
-              <input type="text" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white" value={formData.student_package || ""} onChange={(e) => setFormData({ ...formData, student_package: e.target.value })} />
+              <label className="block text-sm font-medium text-gray-600 mb-1">Package</label>
+              <input type="text" className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900" value={formData.student_package || ""} onChange={(e) => setFormData({ ...formData, student_package: e.target.value })} />
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">College Name</label>
-            <input required type="text" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white" value={formData.college_name || ""} onChange={(e) => setFormData({ ...formData, college_name: e.target.value })} />
+            <label className="block text-sm font-medium text-gray-600 mb-1">College Name</label>
+            <input required type="text" className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900" value={formData.college_name || ""} onChange={(e) => setFormData({ ...formData, college_name: e.target.value })} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Feedback</label>
-            <textarea required className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white min-h-[100px]" value={formData.feedback || ""} onChange={(e) => setFormData({ ...formData, feedback: e.target.value })} />
+            <label className="block text-sm font-medium text-gray-600 mb-1">Feedback</label>
+            <textarea required className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900 min-h-[100px]" value={formData.feedback || ""} onChange={(e) => setFormData({ ...formData, feedback: e.target.value })} />
           </div>
           <div className="flex justify-end pt-4">
             <button

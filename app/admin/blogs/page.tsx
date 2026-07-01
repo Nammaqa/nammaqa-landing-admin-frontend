@@ -88,27 +88,27 @@ export default function BlogsPage() {
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingId ? "Edit Blog" : "Create Blog"}>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Blog Image URL</label>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Blog Image URL</label>
             <ImageUpload 
               value={formData.blog_image || ""} 
               onChange={(url) => setFormData({ ...formData, blog_image: url })} 
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Title</label>
-            <input required type="text" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white" value={formData.blog_title || ""} onChange={(e) => setFormData({ ...formData, blog_title: e.target.value })} />
+            <label className="block text-sm font-medium text-gray-600 mb-1">Title</label>
+            <input required type="text" className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900" value={formData.blog_title || ""} onChange={(e) => setFormData({ ...formData, blog_title: e.target.value })} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Type (e.g. Technical, News)</label>
-            <input required type="text" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white" value={formData.blog_type || ""} onChange={(e) => setFormData({ ...formData, blog_type: e.target.value })} />
+            <label className="block text-sm font-medium text-gray-600 mb-1">Type (e.g. Technical, News)</label>
+            <input required type="text" className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900" value={formData.blog_type || ""} onChange={(e) => setFormData({ ...formData, blog_type: e.target.value })} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Description</label>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Description</label>
             <RichTextEditor value={formData.blog_description || ""} onChange={(val) => setFormData({ ...formData, blog_description: val })} />
           </div>
           <div className="flex items-center gap-2 mt-4">
             <input type="checkbox" id="is_highlight" checked={formData.is_highlight || false} onChange={(e) => setFormData({ ...formData, is_highlight: e.target.checked })} className="w-4 h-4 bg-gray-900 border border-gray-700 rounded" />
-            <label htmlFor="is_highlight" className="text-sm font-medium text-gray-400">Mark as Highlighted</label>
+            <label htmlFor="is_highlight" className="text-sm font-medium text-gray-600">Mark as Highlighted</label>
           </div>
           <div className="flex justify-end pt-4">
             <button 

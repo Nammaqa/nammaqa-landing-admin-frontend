@@ -81,14 +81,14 @@ export default function RichTextEditor({
   };
 
   return (
-    <div className="overflow-hidden rounded-lg border border-gray-700 bg-gray-900">
-      <div className="flex flex-wrap items-center gap-1 border-b border-gray-700 bg-gray-800/80 p-2">
+    <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+      <div className="flex flex-wrap items-center gap-1 border-b border-gray-200 bg-gray-50 p-2">
         {toolbarButtons.map(({ label, icon: Icon, command }) => (
           <button
             key={command}
             type="button"
             onClick={() => runCommand(command)}
-            className="rounded-md p-2 text-gray-300 transition-colors hover:bg-gray-700 hover:text-white"
+            className="rounded-md p-2 text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
             title={label}
             aria-label={label}
           >
@@ -133,13 +133,13 @@ export default function RichTextEditor({
           onInput={emitChange}
           onBlur={emitChange}
           onKeyDown={handleKeyDown}
-          className="rich-text-editor min-h-[140px] w-full overflow-y-auto p-3 text-sm leading-6 text-white outline-none"
+          className="rich-text-editor min-h-[140px] w-full overflow-y-auto p-3 text-sm leading-6 text-gray-900 outline-none"
           style={{ minHeight }}
           data-placeholder={placeholder}
         />
       </div>
       {maxLength && (
-        <div className={`text-xs mt-1 text-right px-1 ${charCount > maxLength ? "text-red-500" : "text-gray-400"}`}>
+        <div className={`text-xs mt-1 text-right px-1 ${charCount > maxLength ? "text-red-500" : "text-gray-500"}`}>
           {charCount} / {maxLength}
         </div>
       )}
