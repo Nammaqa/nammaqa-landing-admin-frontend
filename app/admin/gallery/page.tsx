@@ -74,6 +74,7 @@ export default function GalleryPage() {
       label: "Date",
       render: (val: string) => (val ? new Date(val).toLocaleDateString() : "—"),
     },
+    { key: "hashtags", label: "Hashtags" },
   ];
 
   return (
@@ -108,6 +109,24 @@ export default function GalleryPage() {
               className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900"
               value={formData.date ? String(formData.date) : ""}
               onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Description</label>
+            <textarea
+              className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900 min-h-[100px]"
+              value={formData.description || ""}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Hashtags</label>
+            <input
+              type="text"
+              className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900"
+              value={formData.hashtags || ""}
+              onChange={(e) => setFormData({ ...formData, hashtags: e.target.value })}
+              placeholder="#festival #travel"
             />
           </div>
           <div className="flex justify-end pt-4">
