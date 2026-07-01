@@ -14,7 +14,8 @@ export default (sequelize, DataTypes) => {
   }
   Gallery.init({
     image_url: DataTypes.STRING,
-    image_title: DataTypes.STRING
+    image_title: DataTypes.STRING,
+    date: DataTypes.DATEONLY
   }, {
     sequelize,
     modelName: 'Gallery',

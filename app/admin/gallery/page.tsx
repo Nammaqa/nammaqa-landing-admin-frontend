@@ -69,6 +69,11 @@ export default function GalleryPage() {
   const columns = [
     { key: "image_url", label: "Image", render: (val: string) => <img src={val} alt="gallery" className="h-10 w-10 rounded object-cover" /> },
     { key: "image_title", label: "Title" },
+    {
+      key: "date",
+      label: "Date",
+      render: (val: string) => (val ? new Date(val).toLocaleDateString() : "—"),
+    },
   ];
 
   return (
@@ -95,6 +100,15 @@ export default function GalleryPage() {
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">Title (Optional)</label>
             <input type="text" className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900" value={formData.image_title || ""} onChange={(e) => setFormData({ ...formData, image_title: e.target.value })} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Date</label>
+            <input
+              type="date"
+              className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900"
+              value={formData.date ? String(formData.date) : ""}
+              onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+            />
           </div>
           <div className="flex justify-end pt-4">
             <button 
