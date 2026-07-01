@@ -1,19 +1,33 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import DataTable from "../components/DataTable";
 import Modal from "../components/Modal";
 import ImageUpload from "../components/ImageUpload";
 
+type SuccessStoryItem = {
+  id: string | number;
+  student_name?: string;
+  student_image?: string;
+  student_type?: string;
+  college_name?: string;
+  feedback?: string;
+  student_package?: string;
+};
+
+const emptyForm: Partial<SuccessStoryItem> = {
+  student_type: "Student",
+};
+
 export default function SuccessStoriesPage() {
-  const [data, setData] = useState<any[]>([]);
+  const [data, setData] = useState<SuccessStoryItem[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [formData, setFormData] = useState<any>({});
+  const [formData, setFormData] = useState<Partial<SuccessStoryItem>>(emptyForm);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
 
-  const fetchItems = async () => {
+  const fetchItems = useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await fetch(`/api/success-stories`);
@@ -22,21 +36,28 @@ export default function SuccessStoriesPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    fetchItems();
-  }, []);
+    const timer = window.setTimeout(() => {
+      void fetchItems();
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, [fetchItems]);
 
   const handleOpenCreate = () => {
     setEditingId(null);
-    setFormData({});
+    setFormData(emptyForm);
     setIsModalOpen(true);
   };
 
-  const handleOpenEdit = (item: any) => {
-    setEditingId(item.id);
-    setFormData(item);
+  const handleOpenEdit = (item: SuccessStoryItem) => {
+    setEditingId(String(item.id));
+    setFormData({
+      ...item,
+      student_type: item.student_type || "Student",
+    });
     setIsModalOpen(true);
   };
 
@@ -68,8 +89,8 @@ export default function SuccessStoriesPage() {
 
   const columns = [
     { key: "student_name", label: "Student Name" },
-    { key: "student_type", label: "Type" },
-    { key: "placed_company", label: "Company" },
+    { key: "student_type", label: "Designation" },
+    { key: "college_name", label: "College Name" },
     { key: "student_package", label: "Package" },
   ];
 
@@ -89,9 +110,9 @@ export default function SuccessStoriesPage() {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-400 mb-1">Student Image</label>
-            <ImageUpload 
-              value={formData.student_image || ""} 
-              onChange={(url) => setFormData({ ...formData, student_image: url })} 
+            <ImageUpload
+              value={formData.student_image || ""}
+              onChange={(url) => setFormData({ ...formData, student_image: url })}
             />
           </div>
           <div>
@@ -100,7 +121,7 @@ export default function SuccessStoriesPage() {
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-400 mb-1">Student Type</label>
+              <label className="block text-sm font-medium text-gray-400 mb-1">Designation</label>
               <input required type="text" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white" value={formData.student_type || ""} onChange={(e) => setFormData({ ...formData, student_type: e.target.value })} />
             </div>
             <div>
@@ -109,16 +130,16 @@ export default function SuccessStoriesPage() {
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Placed Company</label>
-            <input required type="text" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white" value={formData.placed_company || ""} onChange={(e) => setFormData({ ...formData, placed_company: e.target.value })} />
+            <label className="block text-sm font-medium text-gray-400 mb-1">College Name</label>
+            <input required type="text" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white" value={formData.college_name || ""} onChange={(e) => setFormData({ ...formData, college_name: e.target.value })} />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-400 mb-1">Feedback</label>
             <textarea required className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white min-h-[100px]" value={formData.feedback || ""} onChange={(e) => setFormData({ ...formData, feedback: e.target.value })} />
           </div>
           <div className="flex justify-end pt-4">
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               disabled={isSaving}
               className={`px-6 py-2 rounded shadow ${isSaving ? "bg-gray-600 text-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 text-white"}`}
             >

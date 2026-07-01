@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { MessageSquare, Inbox, Clock3 } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+import { MessageSquare, Inbox } from "lucide-react";
 import DataTable from "../components/DataTable";
 import Modal from "../components/Modal";
 
@@ -9,6 +9,9 @@ type ContactMessageItem = {
   id: number;
   full_name: string;
   email: string;
+  contact_number: string | null;
+  otp: string | null;
+  otpverified: boolean;
   message: string;
   createdAt: string;
   updatedAt: string;
@@ -21,6 +24,7 @@ export default function ContactMessagesPage() {
   const [formData, setFormData] = useState({
     full_name: "",
     email: "",
+    contact_number: "",
     message: "",
   });
   const [formError, setFormError] = useState("");
@@ -29,7 +33,7 @@ export default function ContactMessagesPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [previewItem, setPreviewItem] = useState<ContactMessageItem | null>(null);
 
-  const fetchItems = async () => {
+  const fetchItems = useCallback(async () => {
     setIsLoading(true);
     try {
       const res = await fetch("/api/contact-messages");
@@ -38,17 +42,22 @@ export default function ContactMessagesPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    fetchItems();
-  }, []);
+    const timer = window.setTimeout(() => {
+      void fetchItems();
+    }, 0);
+
+    return () => window.clearTimeout(timer);
+  }, [fetchItems]);
 
   const handleOpenCreate = () => {
     setEditingId(null);
     setFormData({
       full_name: "",
       email: "",
+      contact_number: "",
       message: "",
     });
     setFormError("");
@@ -61,6 +70,7 @@ export default function ContactMessagesPage() {
     setFormData({
       full_name: item.full_name,
       email: item.email,
+      contact_number: item.contact_number || "",
       message: item.message,
     });
     setFormError("");
@@ -108,6 +118,16 @@ export default function ContactMessagesPage() {
   const columns = [
     { key: "full_name", label: "Name" },
     { key: "email", label: "Email" },
+    { key: "contact_number", label: "Contact Number" },
+    {
+      key: "otpverified",
+      label: "OTP Verified",
+      render: (val: boolean) => (
+        <span className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${val ? "bg-green-500/10 text-green-300" : "bg-yellow-500/10 text-yellow-300"}`}>
+          {val ? "Verified" : "Pending"}
+        </span>
+      ),
+    },
     {
       key: "message",
       label: "Message",
@@ -174,6 +194,7 @@ export default function ContactMessagesPage() {
         data={data}
         onCreate={handleOpenCreate}
         onPreview={(item: ContactMessageItem) => setPreviewItem(item)}
+        onEdit={handleOpenEdit}
         onDelete={handleDelete}
         isLoading={isLoading}
       />
@@ -202,6 +223,16 @@ export default function ContactMessagesPage() {
               className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-400 mb-1">Contact Number</label>
+            <input
+              required
+              type="tel"
+              className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white"
+              value={formData.contact_number}
+              onChange={(e) => setFormData({ ...formData, contact_number: e.target.value })}
             />
           </div>
           <div>
@@ -253,6 +284,14 @@ export default function ContactMessagesPage() {
               <div className="text-sm text-white break-words">{previewItem.email}</div>
             </div>
             <div>
+              <div className="text-sm text-gray-400">Contact Number</div>
+              <div className="text-sm text-white break-words">{previewItem.contact_number || "-"}</div>
+            </div>
+            <div>
+              <div className="text-sm text-gray-400">OTP Verified</div>
+              <div className={previewItem.otpverified ? "text-sm text-green-300" : "text-sm text-yellow-300"}>{previewItem.otpverified ? "Verified" : "Pending"}</div>
+            </div>
+            <div>
               <div className="text-sm text-gray-400">Message</div>
               <pre className="whitespace-pre-wrap text-sm text-white bg-gray-900 p-3 rounded mt-1">{previewItem.message}</pre>
             </div>
@@ -262,3 +301,4 @@ export default function ContactMessagesPage() {
     </div>
   );
 }
+

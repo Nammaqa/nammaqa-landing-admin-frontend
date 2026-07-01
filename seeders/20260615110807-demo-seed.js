@@ -43,8 +43,8 @@ export async function up(queryInterface, Sequelize) {
   await queryInterface.bulkInsert('success_stories', [{
     student_name: 'Jane Doe',
     student_image: 'https://example.com/jane.png',
-    student_type: 'Alumni',
-    placed_company: 'Google',
+    student_type: 'Student',
+    college_name: 'NammaQA College',
     feedback: 'The workshop was incredibly helpful and landed me a job!',
     student_package: '30 LPA',
     createdAt: new Date(),
