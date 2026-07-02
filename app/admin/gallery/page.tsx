@@ -5,6 +5,26 @@ import DataTable from "../components/DataTable";
 import Modal from "../components/Modal";
 import ImageUpload from "../components/ImageUpload";
 
+const formatDateWithFullYear = (dateString: string): string => {
+  if (!dateString) return "—";
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return "—";
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(date.getUTCDate()).padStart(2, "0");
+  return `${month}/${day}/${year}`;
+};
+
+const formatDateForInput = (dateString: string): string => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return "";
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(date.getUTCDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
 export default function GalleryPage() {
   const [data, setData] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -72,8 +92,9 @@ export default function GalleryPage() {
     {
       key: "date",
       label: "Date",
-      render: (val: string) => (val ? new Date(val).toLocaleDateString() : "—"),
+      render: (val: string) => formatDateWithFullYear(val),
     },
+    { key: "description", label: "Description" },
     { key: "hashtags", label: "Hashtags" },
   ];
 
@@ -107,7 +128,7 @@ export default function GalleryPage() {
             <input
               type="date"
               className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900"
-              value={formData.date ? String(formData.date) : ""}
+              value={formatDateForInput(formData.date)}
               onChange={(e) => setFormData({ ...formData, date: e.target.value })}
             />
           </div>
