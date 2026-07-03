@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { Calendar } from "lucide-react";
 import DataTable from "../components/DataTable";
 import Modal from "../components/Modal";
 import ImageUpload from "../components/ImageUpload";
@@ -32,6 +33,13 @@ export default function GalleryPage() {
   const [formData, setFormData] = useState<any>({});
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const dateInputRef = useRef<HTMLInputElement | null>(null);
+
+  const openDatePicker = (input: HTMLInputElement | null) => {
+    if (!input) return;
+    input.showPicker?.();
+    input.focus();
+  };
 
   const fetchItems = async () => {
     setIsLoading(true);
@@ -125,16 +133,21 @@ export default function GalleryPage() {
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">Date</label>
-            <input
-              type="date"
-              className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900"
-              value={formatDateForInput(formData.date)}
-              onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-              onKeyDown={(e) => e.preventDefault()}
-              onPaste={(e) => e.preventDefault()}
-              onFocus={(e) => (e.target as HTMLInputElement).showPicker?.()}
-              onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
-            />
+            <div className="relative">
+              <input
+                ref={dateInputRef}
+                type="date"
+                className="w-full bg-white border border-gray-300 rounded p-2 pr-10 text-gray-900"
+                value={formatDateForInput(formData.date)}
+                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                onKeyDown={(e) => e.preventDefault()}
+                onPaste={(e) => e.preventDefault()}
+              />
+              <Calendar
+                className="absolute right-3 top-1/2 h-5 w-5 text-gray-500 -translate-y-1/2 cursor-pointer"
+                onClick={() => openDatePicker(dateInputRef.current)}
+              />
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">Description</label>
