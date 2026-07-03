@@ -130,6 +130,10 @@ export default function GalleryPage() {
               className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900"
               value={formatDateForInput(formData.date)}
               onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+              onKeyDown={(e) => e.preventDefault()}
+              onPaste={(e) => e.preventDefault()}
+              onFocus={(e) => (e.target as HTMLInputElement).showPicker?.()}
+              onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
             />
           </div>
           <div>

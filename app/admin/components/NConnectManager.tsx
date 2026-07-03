@@ -101,16 +101,36 @@ export default function NConnectManager({ title, type }: { title: string; type: 
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">Description</label>
-            <RichTextEditor value={formData.description || ""} onChange={(val) => setFormData({ ...formData, description: val })} maxLength={type === "workshop" ? 250 : undefined} />
+            <RichTextEditor value={formData.description || ""} onChange={(val) => setFormData({ ...formData, description: val })} />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-1">Start Date</label>
-              <input type="date" required className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900" value={formData.start_date ? new Date(formData.start_date).toISOString().split('T')[0] : ""} onChange={(e) => setFormData({ ...formData, start_date: e.target.value })} />
+              <input
+                type="date"
+                required
+                className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900"
+                value={formData.start_date ? new Date(formData.start_date).toISOString().split('T')[0] : ""}
+                onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
+                onKeyDown={(e) => e.preventDefault()}
+                onPaste={(e) => e.preventDefault()}
+                onFocus={(e) => (e.target as HTMLInputElement).showPicker?.()}
+                onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
+              />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-1">End Date</label>
-              <input type="date" required className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900" value={formData.end_date ? new Date(formData.end_date).toISOString().split('T')[0] : ""} onChange={(e) => setFormData({ ...formData, end_date: e.target.value })} />
+              <input
+                type="date"
+                required
+                className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900"
+                value={formData.end_date ? new Date(formData.end_date).toISOString().split('T')[0] : ""}
+                onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
+                onKeyDown={(e) => e.preventDefault()}
+                onPaste={(e) => e.preventDefault()}
+                onFocus={(e) => (e.target as HTMLInputElement).showPicker?.()}
+                onClick={(e) => (e.target as HTMLInputElement).showPicker?.()}
+              />
             </div>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -140,8 +160,8 @@ export default function NConnectManager({ title, type }: { title: string; type: 
           <div className="flex justify-end pt-4">
             <button 
               type="submit" 
-              disabled={isSaving || (type === "workshop" && (formData.description?.replace(/<[^>]*>?/gm, '')?.length || 0) > 250)}
-              className={`px-6 py-2 rounded shadow ${isSaving || (type === "workshop" && (formData.description?.replace(/<[^>]*>?/gm, '')?.length || 0) > 250) ? "bg-gray-600 text-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 text-white"}`}
+              disabled={isSaving}
+              className={`px-6 py-2 rounded shadow ${isSaving ? "bg-gray-600 text-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 text-white"}`}
             >
               {isSaving ? (
                 <span className="flex items-center gap-2">
