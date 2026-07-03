@@ -14,7 +14,7 @@ interface DataTableProps {
   onEdit?: (item: any) => void;
   onPreview?: (item: any) => void;
   onDelete: (id: string | number) => void;
-  onCreate: () => void;
+  onCreate?: () => void;
   itemsPerPage?: number;
   isLoading?: boolean;
 }
@@ -75,13 +75,15 @@ export default function DataTable({
             />
           </div>
           
-          <button
-            onClick={onCreate}
-            className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-4 py-2 rounded-lg font-medium shadow-lg transition-transform hover:scale-105 active:scale-95 whitespace-nowrap w-full sm:w-auto justify-center"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Create New</span>
-          </button>
+          {onCreate ? (
+            <button
+              onClick={onCreate}
+              className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white px-4 py-2 rounded-lg font-medium shadow-lg transition-transform hover:scale-105 active:scale-95 whitespace-nowrap w-full sm:w-auto justify-center"
+            >
+              <Plus className="w-4 h-4" />
+              <span>Create New</span>
+            </button>
+          ) : null}
         </div>
       </div>
 
@@ -188,3 +190,4 @@ export default function DataTable({
     </div>
   );
 }
+
