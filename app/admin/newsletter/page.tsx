@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Mail, CheckCircle2, AlertCircle, Megaphone, Send } from "lucide-react";
+import { Mail, CheckCircle2, AlertCircle, Megaphone, Send, Pencil } from "lucide-react";
 import DataTable from "../components/DataTable";
 import Modal from "../components/Modal";
 import RichTextEditor from "../components/RichTextEditor";
@@ -34,6 +34,7 @@ export default function NewsletterPage() {
   const [isViewCampaignOpen, setIsViewCampaignOpen] = useState(false);
   const [isSendResultOpen, setIsSendResultOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingCampaignId, setEditingCampaignId] = useState<number | null>(null);
   const [email, setEmail] = useState("");
   const [formError, setFormError] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
@@ -104,7 +105,24 @@ export default function NewsletterPage() {
   };
 
   const handleOpenCampaign = () => {
+    setEditingCampaignId(null);
     setCampaignData({ subject: "", content: "" });
+    setFormError("");
+    setStatusMessage("");
+    setIsCampaignModalOpen(true);
+  };
+
+  const handleOpenEditCampaign = (campaign: Campaign) => {
+    if (!campaign.id) return;
+    setEditingCampaignId(campaign.id);
+    setCampaignData({
+      id: campaign.id,
+      subject: campaign.subject,
+      content: campaign.content,
+      createdAt: campaign.createdAt,
+    });
+    setFormError("");
+    setStatusMessage("");
     setIsCampaignModalOpen(true);
   };
 
@@ -118,19 +136,25 @@ export default function NewsletterPage() {
     
     setIsSaving(true);
     try {
-      const res = await fetch("/api/campaigns", {
-        method: "POST",
+      const res = await fetch(editingCampaignId ? `/api/campaigns/${editingCampaignId}` : "/api/campaigns", {
+        method: editingCampaignId ? "PUT" : "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(campaignData),
+        body: JSON.stringify({
+          subject: campaignData.subject,
+          content: campaignData.content,
+        }),
       });
+      const json = await res.json().catch(() => null);
 
       if (!res.ok) {
-        setFormError("Failed to create campaign.");
+        setFormError(json?.error || `Failed to ${editingCampaignId ? "update" : "create"} campaign.`);
         return;
       }
 
       setIsCampaignModalOpen(false);
+      setEditingCampaignId(null);
       setCampaignData({ subject: "", content: "" });
+      setStatusMessage(editingCampaignId ? "Campaign updated successfully." : "Campaign created successfully.");
       await fetchCampaigns();
     } finally {
       setIsSaving(false);
@@ -426,6 +450,14 @@ export default function NewsletterPage() {
                     View
                   </button>
                   <button
+                    onClick={() => handleOpenEditCampaign(campaign)}
+                    disabled={!campaign.id || sendingCampaignId !== null}
+                    className="px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-800 rounded text-sm flex items-center gap-1 disabled:bg-gray-200 disabled:text-gray-500 disabled:cursor-not-allowed"
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                    Edit
+                  </button>
+                  <button
                     onClick={() => campaign.id && handleDeleteCampaign(campaign.id)}
                     className="px-3 py-1 bg-red-100 hover:bg-red-200 text-red-800 rounded text-sm"
                   >
@@ -485,8 +517,11 @@ export default function NewsletterPage() {
 
       <Modal
         isOpen={isCampaignModalOpen}
-        onClose={() => setIsCampaignModalOpen(false)}
-        title="Create Campaign"
+        onClose={() => {
+          setIsCampaignModalOpen(false);
+          setEditingCampaignId(null);
+        }}
+        title={editingCampaignId ? "Edit Campaign" : "Create Campaign"}
       >
         <form onSubmit={handleSaveCampaign} className="space-y-4">
           <div>
@@ -522,7 +557,10 @@ export default function NewsletterPage() {
           <div className="flex justify-end gap-3 pt-4">
             <button
               type="button"
-              onClick={() => setIsCampaignModalOpen(false)}
+              onClick={() => {
+                setIsCampaignModalOpen(false);
+                setEditingCampaignId(null);
+              }}
               className="px-4 py-2 border border-gray-300 rounded text-gray-700 hover:bg-gray-50"
             >
               Cancel
@@ -535,10 +573,10 @@ export default function NewsletterPage() {
               {isSaving ? (
                 <span className="flex items-center gap-2">
                   <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
-                  Creating...
+                  {editingCampaignId ? "Updating..." : "Creating..."}
                 </span>
               ) : (
-                "Create Campaign"
+                editingCampaignId ? "Update Campaign" : "Create Campaign"
               )}
             </button>
           </div>
