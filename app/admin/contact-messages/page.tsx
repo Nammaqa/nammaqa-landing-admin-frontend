@@ -156,9 +156,9 @@ export default function ContactMessagesPage() {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-gray-800 border border-gray-700 rounded-2xl p-5 shadow-xl">
+        <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-blue-500/10 text-blue-400">
+            <div className="p-3 rounded-xl bg-blue-50 text-blue-600">
               <Inbox className="w-5 h-5" />
             </div>
             <div>
@@ -167,9 +167,9 @@ export default function ContactMessagesPage() {
             </div>
           </div>
         </div>
-        <div className="bg-gray-800 border border-gray-700 rounded-2xl p-5 shadow-xl">
+        <div className="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-green-500/10 text-green-400">
+            <div className="p-3 rounded-xl bg-green-50 text-green-600">
               <MessageSquare className="w-5 h-5" />
             </div>
             <div>
