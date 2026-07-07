@@ -5,7 +5,9 @@ import { sendContactOtp } from "@/lib/contactOtp";
 type ContactMessageRecord = {
   id: number;
   contact_number: string | null;
+  otp: string | null;
   otpverified: boolean;
+  updatedAt?: string | Date;
   update(values: Record<string, unknown>): Promise<ContactMessageRecord>;
 };
 
@@ -38,10 +40,18 @@ async function findContactMessage(id: unknown, contactNumber: unknown) {
   return null;
 }
 
-export async function POST(req: NextRequest) {
+function getContactLookupFromUrl(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+
+  return {
+    id: searchParams.get("id"),
+    contact_number: searchParams.get("contact_number"),
+  };
+}
+
+async function resendOtp(id: unknown, contactNumber: unknown) {
   try {
-    const body = await req.json();
-    const item = await findContactMessage(body?.id, body?.contact_number);
+    const item = await findContactMessage(id, contactNumber);
 
     if (!item) {
       return NextResponse.json(
@@ -52,16 +62,24 @@ export async function POST(req: NextRequest) {
 
     if (!item.contact_number) {
       return NextResponse.json(
-        { error: "Contact number is required to send OTP" },
+        { error: "Contact number is required to resend OTP" },
         { status: 400 }
       );
     }
-
+    console.log("Resend OTP request for contact message ID:", item.id, "contact number:", item.contact_number);
     const { otp, providerStatus, providerHttpStatus, providerResponseText } = await sendContactOtp(item.contact_number);
+    console.log("Resend OTP provider result:", {
+      itemId: item.id,
+      contact_number: item.contact_number,
+      providerStatus,
+      providerHttpStatus,
+      providerResponseText,
+      otp,
+    });
     await item.update({ otp, otpverified: false });
 
     return NextResponse.json({
-      message: providerStatus === "sent" ? "OTP generated and sent" : "OTP generated but provider did not confirm delivery",
+      message: providerStatus === "sent" ? "OTP resent" : "OTP generated but provider did not confirm delivery",
       providerStatus,
       providerHttpStatus,
       item: {
@@ -73,8 +91,13 @@ export async function POST(req: NextRequest) {
     }, { status: providerStatus === "sent" ? 200 : 502 });
   } catch {
     return NextResponse.json(
-      { error: "Failed to send OTP" },
+      { error: "Failed to resend OTP" },
       { status: 500 }
     );
   }
+}
+
+export async function GET(req: NextRequest) {
+  const { id, contact_number } = getContactLookupFromUrl(req);
+  return resendOtp(id, contact_number);
 }
