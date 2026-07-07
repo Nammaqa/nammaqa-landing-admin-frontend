@@ -42,6 +42,7 @@ function isValidContactNumber(value: string) {
 export async function GET() {
   try {
     const items = await ContactMessage.findAll({
+      where: { otpverified: true },
       order: [["createdAt", "DESC"]],
     });
 

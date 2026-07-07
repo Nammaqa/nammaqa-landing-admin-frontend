@@ -120,15 +120,6 @@ export default function ContactMessagesPage() {
     { key: "email", label: "Email" },
     { key: "contact_number", label: "Contact Number" },
     {
-      key: "otpverified",
-      label: "OTP Verified",
-      render: (val: boolean) => (
-        <span className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${val ? "bg-green-500/10 text-green-300" : "bg-yellow-500/10 text-yellow-300"}`}>
-          {val ? "Verified" : "Pending"}
-        </span>
-      ),
-    },
-    {
       key: "message",
       label: "Message",
       render: (val: string) => (
@@ -210,7 +201,7 @@ export default function ContactMessagesPage() {
             <input
               required
               type="text"
-              className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white"
+              className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               value={formData.full_name}
               onChange={(e) => setFormData({ ...formData, full_name: e.target.value })}
             />
@@ -220,7 +211,7 @@ export default function ContactMessagesPage() {
             <input
               required
               type="email"
-              className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white"
+              className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             />
@@ -230,7 +221,7 @@ export default function ContactMessagesPage() {
             <input
               required
               type="tel"
-              className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white"
+              className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               value={formData.contact_number}
               onChange={(e) => setFormData({ ...formData, contact_number: e.target.value })}
             />
@@ -239,7 +230,7 @@ export default function ContactMessagesPage() {
             <label className="block text-sm font-medium text-gray-600 mb-1">Message</label>
             <textarea
               required
-              className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900 min-h-[140px]"
+              className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900 min-h-[140px] focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
               value={formData.message}
               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
             />
@@ -288,10 +279,6 @@ export default function ContactMessagesPage() {
               <div className="text-sm text-gray-900 break-words">{previewItem.contact_number || "-"}</div>
             </div>
             <div>
-              <div className="text-sm text-gray-500">OTP Verified</div>
-              <div className={previewItem.otpverified ? "text-sm text-green-300" : "text-sm text-yellow-300"}>{previewItem.otpverified ? "Verified" : "Pending"}</div>
-            </div>
-            <div>
               <div className="text-sm text-gray-500">Message</div>
               <pre className="whitespace-pre-wrap text-sm text-gray-900 bg-gray-50 p-3 rounded mt-1">{previewItem.message}</pre>
             </div>
@@ -301,4 +288,3 @@ export default function ContactMessagesPage() {
     </div>
   );
 }
-
