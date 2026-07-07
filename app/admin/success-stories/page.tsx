@@ -15,9 +15,7 @@ type SuccessStoryItem = {
   student_package?: string;
 };
 
-const emptyForm: Partial<SuccessStoryItem> = {
-  student_type: "Student",
-};
+const emptyForm: Partial<SuccessStoryItem> = {};
 
 export default function SuccessStoriesPage() {
   const [data, setData] = useState<SuccessStoryItem[]>([]);
