@@ -7,9 +7,7 @@ import {
   Underline,
   List,
   ListOrdered,
-  Link,
-  Unlink,
-  Eraser,
+  Paperclip,
 } from "lucide-react";
 
 type RichTextEditorProps = {
@@ -68,16 +66,62 @@ export default function RichTextEditor({
     }
   };
 
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
   const runCommand = (command: string, commandValue?: string) => {
     editorRef.current?.focus();
     document.execCommand(command, false, commandValue);
     emitChange();
   };
 
-  const addLink = () => {
-    const url = window.prompt("Enter link URL");
-    if (!url) return;
-    runCommand("createLink", url);
+  const insertHtml = (html: string) => {
+    editorRef.current?.focus();
+    document.execCommand("insertHTML", false, html);
+    emitChange();
+  };
+
+  const handleFileUpload = async (file: File) => {
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.secure_url) {
+        throw new Error(data?.error || "Upload failed");
+      }
+
+      const url = data.secure_url;
+      if (file.type.startsWith("image/")) {
+        insertHtml(`<img src="${url}" alt="${file.name}" />`);
+      } else {
+        insertHtml(`<a href="${url}" target="_blank" rel="noopener noreferrer">${file.name}</a>`);
+      }
+    } catch (error) {
+      console.error("File attach failed:", error);
+      window.alert("File upload failed. Please try again.");
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
+  const openFilePicker = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    void handleFileUpload(file);
   };
 
   return (
@@ -87,6 +131,7 @@ export default function RichTextEditor({
           <button
             key={command}
             type="button"
+            onMouseDown={(e) => e.preventDefault()}
             onClick={() => runCommand(command)}
             className="rounded-md p-2 text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
             title={label}
@@ -95,34 +140,25 @@ export default function RichTextEditor({
             <Icon className="h-4 w-4" />
           </button>
         ))}
-        <span className="mx-1 h-6 w-px bg-gray-700" />
         <button
           type="button"
-          onClick={addLink}
-          className="rounded-md p-2 text-gray-300 transition-colors hover:bg-gray-700 hover:text-white"
-          title="Add link"
-          aria-label="Add link"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={openFilePicker}
+          disabled={isUploading}
+          className="rounded-md p-2 text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900 disabled:cursor-not-allowed disabled:text-gray-400"
+          title="Attach image or document"
+          aria-label="Attach image or document"
         >
-          <Link className="h-4 w-4" />
+          <Paperclip className="h-4 w-4" />
         </button>
-        <button
-          type="button"
-          onClick={() => runCommand("unlink")}
-          className="rounded-md p-2 text-gray-300 transition-colors hover:bg-gray-700 hover:text-white"
-          title="Remove link"
-          aria-label="Remove link"
-        >
-          <Unlink className="h-4 w-4" />
-        </button>
-        <button
-          type="button"
-          onClick={() => runCommand("removeFormat")}
-          className="rounded-md p-2 text-gray-300 transition-colors hover:bg-gray-700 hover:text-white"
-          title="Clear formatting"
-          aria-label="Clear formatting"
-        >
-          <Eraser className="h-4 w-4" />
-        </button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          className="hidden"
+          accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"
+          onChange={handleFileChange}
+          disabled={isUploading}
+        />
       </div>
       <div className="relative">
         <div
