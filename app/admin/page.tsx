@@ -23,8 +23,8 @@ export default async function AdminDashboard() {
     { label: "Blogs", count: blogCount, color: "from-emerald-500 to-green-500" },
     { label: "Gallery", count: galleryCount, color: "from-pink-500 to-rose-500" },
     { label: "Success Stories", count: successStoryCount, color: "from-indigo-500 to-blue-500" },
-    { label: "Newsletter", count: newsletterCount, color: "from-fuchsia-500 to-pink-500" },
-    { label: "Contact Messages", count: contactCount, color: "from-slate-600 to-slate-500" },
+    { label: "Subscribers", count: newsletterCount, color: "from-fuchsia-500 to-pink-500" },
+    { label: "Enquiries", count: contactCount, color: "from-slate-600 to-slate-500" },
   ];
 
   const maxCount = Math.max(...stats.map((item) => item.count), 1);
