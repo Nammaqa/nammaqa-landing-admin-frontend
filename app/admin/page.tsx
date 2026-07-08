@@ -13,7 +13,7 @@ export default async function AdminDashboard() {
     (db as any).Gallery.count(),
     (db as any).SuccessStory.count(),
     (db as any).NewsletterSubscription.count(),
-    (db as any).ContactMessage.count(),
+    (db as any).ContactMessage.count({ where: { otpverified: true } }),
   ]);
 
   const stats = [
