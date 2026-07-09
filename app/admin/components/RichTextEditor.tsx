@@ -82,6 +82,12 @@ export default function RichTextEditor({
   };
 
   const handleFileUpload = async (file: File) => {
+    const allowedTypes = ["image/png", "image/jpg", "image/jpeg"];
+    if (!allowedTypes.includes(file.type)) {
+      window.alert("Only PNG, JPG, and JPEG image files are allowed.");
+      return;
+    }
+
     setIsUploading(true);
     try {
       const formData = new FormData();
@@ -98,11 +104,7 @@ export default function RichTextEditor({
       }
 
       const url = data.secure_url;
-      if (file.type.startsWith("image/")) {
-        insertHtml(`<img src="${url}" alt="${file.name}" />`);
-      } else {
-        insertHtml(`<a href="${url}" target="_blank" rel="noopener noreferrer">${file.name}</a>`);
-      }
+      insertHtml(`<img src="${url}" alt="${file.name}" />`);
     } catch (error) {
       console.error("File attach failed:", error);
       window.alert("File upload failed. Please try again.");
@@ -122,6 +124,34 @@ export default function RichTextEditor({
     const file = event.target.files?.[0];
     if (!file) return;
     void handleFileUpload(file);
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
+    const clipboardData = e.clipboardData;
+    const hasFiles = Array.from(clipboardData?.files || []).length > 0;
+    const pastedText = clipboardData?.getData("text/plain") || "";
+
+    if (hasFiles) {
+      e.preventDefault();
+      const file = clipboardData.files[0];
+      if (file) {
+        void handleFileUpload(file);
+      }
+      return;
+    }
+
+    if (pastedText.includes("http") && /https?:\/\//i.test(pastedText)) {
+      e.preventDefault();
+      window.alert("Only images uploaded from the toolbar are allowed in this field.");
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const file = e.dataTransfer?.files?.[0];
+    if (file) {
+      void handleFileUpload(file);
+    }
   };
 
   return (
@@ -146,8 +176,8 @@ export default function RichTextEditor({
           onClick={openFilePicker}
           disabled={isUploading}
           className="rounded-md p-2 text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900 disabled:cursor-not-allowed disabled:text-gray-400"
-          title="Attach image or document"
-          aria-label="Attach image or document"
+          title="Attach image"
+          aria-label="Attach image"
         >
           <Paperclip className="h-4 w-4" />
         </button>
@@ -155,7 +185,7 @@ export default function RichTextEditor({
           ref={fileInputRef}
           type="file"
           className="hidden"
-          accept="image/*,.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt"
+          accept=".png,.jpg,.jpeg,image/png,image/jpg,image/jpeg"
           onChange={handleFileChange}
           disabled={isUploading}
         />
@@ -169,6 +199,8 @@ export default function RichTextEditor({
           onInput={emitChange}
           onBlur={emitChange}
           onKeyDown={handleKeyDown}
+          onPaste={handlePaste}
+          onDrop={handleDrop}
           className="rich-text-editor min-h-[140px] w-full overflow-y-auto p-3 text-sm leading-6 text-gray-900 outline-none"
           style={{ minHeight }}
           data-placeholder={placeholder}

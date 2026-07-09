@@ -5,7 +5,6 @@ import {
   Calendar, 
   Trophy, 
   Image as ImageIcon, 
-  LogOut,
   FileText,
   Mail,
   MessageSquare
@@ -13,6 +12,7 @@ import {
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/auth";
 import LogoutButton from "./LogoutButton";
+import AdminLayoutShell from "./AdminLayoutShell";
 
 export default async function AdminLayout({
   children,
@@ -22,7 +22,7 @@ export default async function AdminLayout({
   const session = await getServerSession(authOptions);
 
   return (
-    <div className="flex h-screen bg-gray-50 text-gray-900 overflow-hidden">
+    <AdminLayoutShell>
       {/* Sidebar */}
       <aside className="w-64 bg-white border-r border-gray-200 flex flex-col shadow-sm z-20">
         <div className="p-6 border-b border-gray-200">
@@ -109,6 +109,6 @@ export default async function AdminLayout({
           {children}
         </div>
       </main>
-    </div>
+    </AdminLayoutShell>
   );
 }

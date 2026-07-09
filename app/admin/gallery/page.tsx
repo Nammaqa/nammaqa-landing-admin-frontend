@@ -76,6 +76,12 @@ export default function GalleryPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!formData.image_url) {
+      alert("Please upload an image before saving the gallery item.");
+      return;
+    }
+
     setIsSaving(true);
     const method = editingId ? "PUT" : "POST";
     const url = editingId ? `/api/gallery/${editingId}` : "/api/gallery";
@@ -118,10 +124,10 @@ export default function GalleryPage() {
         isLoading={isLoading}
       />
 
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingId ? "Edit Image" : "Upload Image"}>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingId ? "Edit Gallery" : "Create Gallery"}>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Image Upload</label>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Image Upload <span className="text-red-500">*</span></label>
             <ImageUpload 
               value={formData.image_url || ""} 
               onChange={(url) => setFormData({ ...formData, image_url: url })} 

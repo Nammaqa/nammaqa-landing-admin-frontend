@@ -13,6 +13,13 @@ export default function ImageUpload({ value, onChange }: ImageUploadProps) {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    const allowedTypes = ["image/png", "image/jpg", "image/jpeg"];
+    if (!allowedTypes.includes(file.type)) {
+      alert("Only PNG, JPG, and JPEG image files are allowed.");
+      e.target.value = "";
+      return;
+    }
+
     setIsUploading(true);
     const formData = new FormData();
     formData.append("file", file);
@@ -44,7 +51,11 @@ export default function ImageUpload({ value, onChange }: ImageUploadProps) {
         </div>
       )}
       
-      <label className="flex items-center justify-center w-full h-32 px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-lg appearance-none cursor-pointer hover:border-blue-400 focus:outline-none">
+      <label
+        className="flex items-center justify-center w-full h-32 px-4 transition bg-white border-2 border-gray-300 border-dashed rounded-lg appearance-none cursor-pointer hover:border-blue-400 focus:outline-none"
+        onDragOver={(e) => e.preventDefault()}
+        onDrop={(e) => e.preventDefault()}
+      >
         <span className="flex items-center space-x-2">
           {isUploading ? (
             <Loader2 className="w-6 h-6 text-gray-400 animate-spin" />
@@ -52,10 +63,10 @@ export default function ImageUpload({ value, onChange }: ImageUploadProps) {
             <UploadCloud className="w-6 h-6 text-gray-400" />
           )}
           <span className="font-medium text-gray-400">
-            {isUploading ? "Uploading..." : "Drop files to Attach, or browse"}
+            {isUploading ? "Uploading..." : "Upload Image"}
           </span>
         </span>
-        <input type="file" className="hidden" accept="image/*" onChange={handleUpload} disabled={isUploading} />
+        <input type="file" className="hidden" accept=".png,.jpg,.jpeg,image/png,image/jpg,image/jpeg" onChange={handleUpload} disabled={isUploading} />
       </label>
     </div>
   );
