@@ -7,6 +7,20 @@ import Modal from "./Modal";
 import ImageUpload from "./ImageUpload";
 import RichTextEditor from "./RichTextEditor";
 
+const formatDateForInput = (value?: string) => {
+  if (!value) return "";
+  if (/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};
+
 export default function NConnectManager({ title, type }: { title: string; type: string }) {
   const [data, setData] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -121,8 +135,17 @@ export default function NConnectManager({ title, type }: { title: string; type: 
                 type="date"
                 required
                 className="w-full bg-white border border-gray-300 rounded p-2 pr-10 text-gray-900"
-                value={formData.start_date ? new Date(formData.start_date).toISOString().split('T')[0] : ""}
-                onChange={(e) => setFormData({ ...formData, start_date: e.target.value })}
+                value={formatDateForInput(formData.start_date)}
+                onChange={(e) => {
+                  const nextStartDate = e.target.value;
+                  const currentEndDate = formData.end_date;
+                  const shouldResetEndDate = Boolean(currentEndDate) && currentEndDate < nextStartDate;
+                  setFormData({
+                    ...formData,
+                    start_date: nextStartDate,
+                    ...(shouldResetEndDate ? { end_date: nextStartDate } : {}),
+                  });
+                }}
                 onKeyDown={(e) => e.preventDefault()}
                 onPaste={(e) => e.preventDefault()}
               />
@@ -140,7 +163,8 @@ export default function NConnectManager({ title, type }: { title: string; type: 
                 type="date"
                 required
                 className="w-full bg-white border border-gray-300 rounded p-2 pr-10 text-gray-900"
-                value={formData.end_date ? new Date(formData.end_date).toISOString().split('T')[0] : ""}
+                value={formatDateForInput(formData.end_date)}
+                min={formatDateForInput(formData.start_date)}
                 onChange={(e) => setFormData({ ...formData, end_date: e.target.value })}
                 onKeyDown={(e) => e.preventDefault()}
                 onPaste={(e) => e.preventDefault()}
