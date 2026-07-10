@@ -88,7 +88,7 @@ export default function BlogsPage() {
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingId ? "Edit Blog" : "Create Blog"}>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Blog Image URL</label>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Blog Image</label>
             <ImageUpload 
               value={formData.blog_image || ""} 
               onChange={(url) => setFormData({ ...formData, blog_image: url })} 

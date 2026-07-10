@@ -112,7 +112,7 @@ export default function NConnectManager({ title, type }: { title: string; type: 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingId ? `Edit ${title}` : `Create ${title}`}>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Image URL</label>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Image</label>
             <ImageUpload 
               value={formData.imageurl || ""} 
               onChange={(url) => setFormData({ ...formData, imageurl: url })} 
