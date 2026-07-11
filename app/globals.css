@@ -24,3 +24,41 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+input[type="date"] {
+  appearance: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: textfield !important;
+  background-image: none !important;
+}
+
+input[type="date"]::-webkit-inner-spin-button,
+input[type="date"]::-webkit-clear-button,
+input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none !important;
+  -webkit-appearance: none !important;
+}
+
+input[type="date"]::-moz-calendar-picker-indicator {
+  display: none !important;
+}
+
+.rich-text-editor ul {
+  list-style: disc outside;
+  margin-left: 1.5rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  padding-left: 0;
+}
+
+.rich-text-editor ol {
+  list-style: decimal outside;
+  margin-left: 1.5rem;
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+  padding-left: 0;
+}
+
+.rich-text-editor li {
+  margin: 0.25rem 0;
+}

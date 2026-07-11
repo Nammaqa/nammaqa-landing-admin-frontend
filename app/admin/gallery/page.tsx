@@ -1,9 +1,30 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+import { Calendar } from "lucide-react";
 import DataTable from "../components/DataTable";
 import Modal from "../components/Modal";
 import ImageUpload from "../components/ImageUpload";
+
+const formatDateWithFullYear = (dateString: string): string => {
+  if (!dateString) return "—";
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return "—";
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(date.getUTCDate()).padStart(2, "0");
+  return `${month}/${day}/${year}`;
+};
+
+const formatDateForInput = (dateString: string): string => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return "";
+  const year = date.getUTCFullYear();
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(date.getUTCDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
 
 export default function GalleryPage() {
   const [data, setData] = useState<any[]>([]);
@@ -12,6 +33,13 @@ export default function GalleryPage() {
   const [formData, setFormData] = useState<any>({});
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const dateInputRef = useRef<HTMLInputElement | null>(null);
+
+  const openDatePicker = (input: HTMLInputElement | null) => {
+    if (!input) return;
+    input.showPicker?.();
+    input.focus();
+  };
 
   const fetchItems = async () => {
     setIsLoading(true);
@@ -48,6 +76,12 @@ export default function GalleryPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!formData.image_url) {
+      alert("Please upload an image before saving the gallery item.");
+      return;
+    }
+
     setIsSaving(true);
     const method = editingId ? "PUT" : "POST";
     const url = editingId ? `/api/gallery/${editingId}` : "/api/gallery";
@@ -69,6 +103,13 @@ export default function GalleryPage() {
   const columns = [
     { key: "image_url", label: "Image", render: (val: string) => <img src={val} alt="gallery" className="h-10 w-10 rounded object-cover" /> },
     { key: "image_title", label: "Title" },
+    {
+      key: "date",
+      label: "Date",
+      render: (val: string) => formatDateWithFullYear(val),
+    },
+    { key: "description", label: "Description" },
+    { key: "hashtags", label: "Hashtags" },
   ];
 
   return (
@@ -83,18 +124,54 @@ export default function GalleryPage() {
         isLoading={isLoading}
       />
 
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingId ? "Edit Image" : "Upload Image"}>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingId ? "Edit Gallery" : "Create Gallery"}>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Image Upload</label>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Image Upload <span className="text-red-500">*</span></label>
             <ImageUpload 
               value={formData.image_url || ""} 
               onChange={(url) => setFormData({ ...formData, image_url: url })} 
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-400 mb-1">Title (Optional)</label>
-            <input type="text" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-white" value={formData.image_title || ""} onChange={(e) => setFormData({ ...formData, image_title: e.target.value })} />
+            <label className="block text-sm font-medium text-gray-600 mb-1">Title (Optional)</label>
+            <input type="text" className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900" value={formData.image_title || ""} onChange={(e) => setFormData({ ...formData, image_title: e.target.value })} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Date</label>
+            <div className="relative">
+              <input
+                ref={dateInputRef}
+                type="date"
+                className="w-full bg-white border border-gray-300 rounded p-2 pr-10 text-gray-900"
+                value={formatDateForInput(formData.date)}
+                onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                onKeyDown={(e) => e.preventDefault()}
+                onPaste={(e) => e.preventDefault()}
+              />
+              <Calendar
+                className="absolute right-3 top-1/2 h-5 w-5 text-gray-500 -translate-y-1/2 cursor-pointer"
+                onClick={() => openDatePicker(dateInputRef.current)}
+              />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Description</label>
+            <textarea
+              className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900 min-h-[100px]"
+              value={formData.description || ""}
+              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Hashtags</label>
+            <input
+              type="text"
+              className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900"
+              value={formData.hashtags || ""}
+              onChange={(e) => setFormData({ ...formData, hashtags: e.target.value })}
+              placeholder="#festival #travel"
+            />
           </div>
           <div className="flex justify-end pt-4">
             <button 

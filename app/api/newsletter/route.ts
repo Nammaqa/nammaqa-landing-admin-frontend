@@ -14,9 +14,10 @@ export async function GET() {
     });
 
     return NextResponse.json(items);
-  } catch (error) {
+  } catch (error: any) {
+    console.error("Newsletter GET error:", error.message, error.errors);
     return NextResponse.json(
-      { error: "Failed to fetch newsletter subscriptions" },
+      { error: error.message || "Failed to fetch newsletter subscriptions" },
       { status: 500 }
     );
   }
@@ -59,9 +60,10 @@ export async function POST(req: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error) {
+  } catch (error: any) {
+    console.error("Newsletter POST error:", error.message, error.errors);
     return NextResponse.json(
-      { error: "Failed to create newsletter subscription" },
+      { error: error.message || "Failed to create newsletter subscription" },
       { status: 500 }
     );
   }

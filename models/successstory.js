@@ -16,7 +16,7 @@ export default (sequelize, DataTypes) => {
     student_name: DataTypes.STRING,
     student_image: DataTypes.STRING,
     student_type: DataTypes.STRING,
-    placed_company: DataTypes.STRING,
+    college_name: DataTypes.STRING,
     feedback: DataTypes.TEXT,
     student_package: DataTypes.STRING
   }, {

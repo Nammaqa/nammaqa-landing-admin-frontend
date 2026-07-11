@@ -17,6 +17,19 @@ export default (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
+    contact_number: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    otp: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    otpverified: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
     message: {
       type: DataTypes.TEXT,
       allowNull: false

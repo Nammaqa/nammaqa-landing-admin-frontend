@@ -5,6 +5,7 @@ import { Sequelize, DataTypes } from 'sequelize';
 
 import configByEnv from '../config/config.js';
 import BlogModel from './blog.js';
+import CampaignModel from './campaign.js';
 import ContactMessageModel from './contactmessage.js';
 import GalleryModel from './gallery.js';
 import NConnectModel from './nconnect.js';
@@ -35,6 +36,7 @@ if (config.use_env_variable) {
 
 const modelDefinitions = [
   BlogModel,
+  CampaignModel,
   ContactMessageModel,
   GalleryModel,
   NConnectModel,

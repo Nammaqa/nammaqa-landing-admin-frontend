@@ -7,9 +7,7 @@ import {
   Underline,
   List,
   ListOrdered,
-  Link,
-  Unlink,
-  Eraser,
+  Paperclip,
 } from "lucide-react";
 
 type RichTextEditorProps = {
@@ -68,61 +66,129 @@ export default function RichTextEditor({
     }
   };
 
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+
   const runCommand = (command: string, commandValue?: string) => {
     editorRef.current?.focus();
     document.execCommand(command, false, commandValue);
     emitChange();
   };
 
-  const addLink = () => {
-    const url = window.prompt("Enter link URL");
-    if (!url) return;
-    runCommand("createLink", url);
+  const insertHtml = (html: string) => {
+    editorRef.current?.focus();
+    document.execCommand("insertHTML", false, html);
+    emitChange();
+  };
+
+  const handleFileUpload = async (file: File) => {
+    const allowedTypes = ["image/png", "image/jpg", "image/jpeg"];
+    if (!allowedTypes.includes(file.type)) {
+      window.alert("Only PNG, JPG, and JPEG image files are allowed.");
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.secure_url) {
+        throw new Error(data?.error || "Upload failed");
+      }
+
+      const url = data.secure_url;
+      insertHtml(`<img src="${url}" alt="${file.name}" />`);
+    } catch (error) {
+      console.error("File attach failed:", error);
+      window.alert("File upload failed. Please try again.");
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
+  const openFilePicker = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    void handleFileUpload(file);
+  };
+
+  const handlePaste = (e: React.ClipboardEvent<HTMLDivElement>) => {
+    const clipboardData = e.clipboardData;
+    const hasFiles = Array.from(clipboardData?.files || []).length > 0;
+    const pastedText = clipboardData?.getData("text/plain") || "";
+
+    if (hasFiles) {
+      e.preventDefault();
+      const file = clipboardData.files[0];
+      if (file) {
+        void handleFileUpload(file);
+      }
+      return;
+    }
+
+    if (pastedText.includes("http") && /https?:\/\//i.test(pastedText)) {
+      e.preventDefault();
+      window.alert("Only images uploaded from the toolbar are allowed in this field.");
+    }
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const file = e.dataTransfer?.files?.[0];
+    if (file) {
+      void handleFileUpload(file);
+    }
   };
 
   return (
-    <div className="overflow-hidden rounded-lg border border-gray-700 bg-gray-900">
-      <div className="flex flex-wrap items-center gap-1 border-b border-gray-700 bg-gray-800/80 p-2">
+    <div className="overflow-hidden rounded-lg border border-gray-200 bg-white">
+      <div className="flex flex-wrap items-center gap-1 border-b border-gray-200 bg-gray-50 p-2">
         {toolbarButtons.map(({ label, icon: Icon, command }) => (
           <button
             key={command}
             type="button"
+            onMouseDown={(e) => e.preventDefault()}
             onClick={() => runCommand(command)}
-            className="rounded-md p-2 text-gray-300 transition-colors hover:bg-gray-700 hover:text-white"
+            className="rounded-md p-2 text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
             title={label}
             aria-label={label}
           >
             <Icon className="h-4 w-4" />
           </button>
         ))}
-        <span className="mx-1 h-6 w-px bg-gray-700" />
         <button
           type="button"
-          onClick={addLink}
-          className="rounded-md p-2 text-gray-300 transition-colors hover:bg-gray-700 hover:text-white"
-          title="Add link"
-          aria-label="Add link"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={openFilePicker}
+          disabled={isUploading}
+          className="rounded-md p-2 text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900 disabled:cursor-not-allowed disabled:text-gray-400"
+          title="Attach image"
+          aria-label="Attach image"
         >
-          <Link className="h-4 w-4" />
+          <Paperclip className="h-4 w-4" />
         </button>
-        <button
-          type="button"
-          onClick={() => runCommand("unlink")}
-          className="rounded-md p-2 text-gray-300 transition-colors hover:bg-gray-700 hover:text-white"
-          title="Remove link"
-          aria-label="Remove link"
-        >
-          <Unlink className="h-4 w-4" />
-        </button>
-        <button
-          type="button"
-          onClick={() => runCommand("removeFormat")}
-          className="rounded-md p-2 text-gray-300 transition-colors hover:bg-gray-700 hover:text-white"
-          title="Clear formatting"
-          aria-label="Clear formatting"
-        >
-          <Eraser className="h-4 w-4" />
-        </button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          className="hidden"
+          accept=".png,.jpg,.jpeg,image/png,image/jpg,image/jpeg"
+          onChange={handleFileChange}
+          disabled={isUploading}
+        />
       </div>
       <div className="relative">
         <div
@@ -133,13 +199,15 @@ export default function RichTextEditor({
           onInput={emitChange}
           onBlur={emitChange}
           onKeyDown={handleKeyDown}
-          className="rich-text-editor min-h-[140px] w-full overflow-y-auto p-3 text-sm leading-6 text-white outline-none"
+          onPaste={handlePaste}
+          onDrop={handleDrop}
+          className="rich-text-editor min-h-[140px] w-full overflow-y-auto p-3 text-sm leading-6 text-gray-900 outline-none"
           style={{ minHeight }}
           data-placeholder={placeholder}
         />
       </div>
       {maxLength && (
-        <div className={`text-xs mt-1 text-right px-1 ${charCount > maxLength ? "text-red-500" : "text-gray-400"}`}>
+        <div className={`text-xs mt-1 text-right px-1 ${charCount > maxLength ? "text-red-500" : "text-gray-500"}`}>
           {charCount} / {maxLength}
         </div>
       )}
