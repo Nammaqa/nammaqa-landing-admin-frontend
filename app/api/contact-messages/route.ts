@@ -62,6 +62,7 @@ export async function POST(req: NextRequest) {
     const email = normalizeEmail(body?.email);
     const contact_number = normalizeContactNumber(body?.contact_number);
     const message = normalizeString(body?.message);
+    const course_interested = normalizeString(body?.course_interested);
 
     if (!full_name || !email || !contact_number || !message) {
       return NextResponse.json(
@@ -91,6 +92,7 @@ export async function POST(req: NextRequest) {
       otp: null,
       otpverified: false,
       message,
+      course_interested: course_interested || null,
     });
 
     return NextResponse.json(
