@@ -5,6 +5,7 @@ type ContactMessageRecord = {
   id: number;
   contact_number: string | null;
   otp: string | null;
+  updatedAt: Date | string;
   update(values: Record<string, unknown>): Promise<ContactMessageRecord>;
 };
 
@@ -62,6 +63,15 @@ export async function POST(req: NextRequest) {
 
       return NextResponse.json(
         { error: "Invalid OTP", verified: false },
+        { status: 400 }
+      );
+    }
+
+    const otpSentTime = new Date(item.updatedAt).getTime();
+    const currentTime = new Date().getTime();
+    if (currentTime - otpSentTime > 30000) {
+      return NextResponse.json(
+        { error: "OTP has expired. Please request a new one.", verified: false },
         { status: 400 }
       );
     }
