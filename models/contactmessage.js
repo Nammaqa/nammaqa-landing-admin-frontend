@@ -33,6 +33,10 @@ export default (sequelize, DataTypes) => {
     message: {
       type: DataTypes.TEXT,
       allowNull: false
+    },
+    course_interested: {
+      type: DataTypes.STRING,
+      allowNull: true
     }
   }, {
     sequelize,

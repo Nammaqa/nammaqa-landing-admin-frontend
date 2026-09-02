@@ -13,6 +13,7 @@ type ContactMessageItem = {
   otp: string | null;
   otpverified: boolean;
   message: string;
+  course_interested: string | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -33,6 +34,7 @@ export default function ContactMessagesPage() {
     email: "",
     contact_number: "",
     message: "",
+    course_interested: "",
   });
   const [formError, setFormError] = useState("");
   const [statusMessage, setStatusMessage] = useState("");
@@ -263,6 +265,7 @@ export default function ContactMessagesPage() {
     { key: "full_name", label: "Name" },
     { key: "email", label: "Email" },
     { key: "contact_number", label: "Contact Number" },
+    { key: "course_interested", label: "Course" },
     {
       key: "message",
       label: "Message",
@@ -438,6 +441,16 @@ export default function ContactMessagesPage() {
             />
           </div>
           <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Course Interested In (Optional)</label>
+            <input
+              type="text"
+              className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+              value={formData.course_interested}
+              onChange={(e) => setFormData({ ...formData, course_interested: e.target.value })}
+              placeholder="e.g. Diploma in Software Testing"
+            />
+          </div>
+          <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">Message</label>
             <textarea
               required
@@ -460,10 +473,10 @@ export default function ContactMessagesPage() {
               className={`px-6 py-2 rounded shadow ${isSaving ? "bg-gray-600 text-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 text-white"}`}
             >
               {isSaving ? (
-                <span className="flex items-center gap-2">
-                  <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
-                  Saving...
-                </span>
+               <span className="flex items-center gap-2">
+                 <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
+                 Saving...
+               </span>
               ) : (
                 "Save"
               )}
@@ -489,6 +502,10 @@ export default function ContactMessagesPage() {
             <div>
               <div className="text-sm text-gray-500">Contact Number</div>
               <div className="text-sm text-gray-900 break-words">{previewItem.contact_number || "-"}</div>
+            </div>
+            <div>
+              <div className="text-sm text-gray-500">Course Interested In</div>
+              <div className="text-sm text-gray-900 break-words">{previewItem.course_interested || "-"}</div>
             </div>
             <div>
               <div className="text-sm text-gray-500">Message</div>
