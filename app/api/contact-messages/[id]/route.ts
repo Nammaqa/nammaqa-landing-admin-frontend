@@ -112,3 +112,38 @@ export async function DELETE(
     );
   }
 }
+
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const body = await req.json();
+    
+    const updateData: Record<string, unknown> = {};
+    if (body.full_name !== undefined) updateData.full_name = normalizeString(body.full_name);
+    if (body.email !== undefined) updateData.email = normalizeEmail(body.email);
+    if (body.contact_number !== undefined) updateData.contact_number = normalizeContactNumber(body.contact_number);
+    if (body.message !== undefined) updateData.message = normalizeString(body.message);
+    if (body.course_interested !== undefined) updateData.course_interested = normalizeString(body.course_interested);
+
+    const item = await ContactMessage.findByPk(id);
+
+    if (!item) {
+      return NextResponse.json(
+        { error: "Contact message not found" },
+        { status: 404 }
+      );
+    }
+
+    await item.update(updateData);
+    return NextResponse.json(item);
+  } catch {
+    return NextResponse.json(
+      { error: "Failed to update contact message" },
+      { status: 500 }
+    );
+  }
+}
+
