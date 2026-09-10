@@ -23,7 +23,12 @@ export default (sequelize, DataTypes) => {
     participants: DataTypes.INTEGER,
     title: DataTypes.STRING,
     description: DataTypes.TEXT,
-    link: DataTypes.STRING
+    link: DataTypes.STRING,
+    mode: {
+      type: DataTypes.ENUM('online', 'offline'),
+      allowNull: false,
+      defaultValue: 'offline'
+    }
   }, {
     sequelize,
     modelName: 'NConnect',
