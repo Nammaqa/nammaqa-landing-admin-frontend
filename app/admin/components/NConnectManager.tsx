@@ -25,7 +25,7 @@ export default function NConnectManager({ title, type }: { title: string; type: 
   const [data, setData] = useState<any[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
-  const [formData, setFormData] = useState<any>({ meeting_type: type });
+  const [formData, setFormData] = useState<any>({ meeting_type: type, mode: "" });
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const startDateRef = useRef<HTMLInputElement | null>(null);
@@ -54,13 +54,13 @@ export default function NConnectManager({ title, type }: { title: string; type: 
 
   const handleOpenCreate = () => {
     setEditingId(null);
-    setFormData({ meeting_type: type });
+    setFormData({ meeting_type: type, mode: "" });
     setIsModalOpen(true);
   };
 
   const handleOpenEdit = (item: any) => {
     setEditingId(item.id);
-    setFormData(item);
+    setFormData({ ...item, mode: item.mode || "" });
     setIsModalOpen(true);
   };
 
@@ -93,6 +93,7 @@ export default function NConnectManager({ title, type }: { title: string; type: 
   const columns = [
     { key: "title", label: "Title" },
     { key: "start_date", label: "Start Date", render: (val: string) => new Date(val).toLocaleDateString() },
+    { key: "mode", label: "Mode", render: (val: string) => val === "online" ? "Online" : "Offline" },
     { key: "address", label: "Address" },
     { key: "participants", label: "Participants" },
   ];
@@ -121,6 +122,19 @@ export default function NConnectManager({ title, type }: { title: string; type: 
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">Title</label>
             <input required type="text" className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900" value={formData.title || ""} onChange={(e) => setFormData({ ...formData, title: e.target.value })} />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Mode</label>
+            <select
+              required
+              className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900"
+              value={formData.mode || ""}
+              onChange={(e) => setFormData({ ...formData, mode: e.target.value })}
+            >
+              <option value="" disabled>Select mode</option>
+              <option value="offline">Offline</option>
+              <option value="online">Online</option>
+            </select>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-600 mb-1">Description</label>

@@ -1,6 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import db from "@/lib/db";
 
+const validModes = ["online", "offline"];
+
+const hasValidMode = (body: { mode?: unknown }) =>
+  body.mode === undefined || validModes.includes(body.mode as string);
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const type = searchParams.get("type");
@@ -17,6 +22,9 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
+    if (!hasValidMode(body)) {
+      return NextResponse.json({ error: "Mode must be online or offline" }, { status: 400 });
+    }
     const model = db as any;
     const newItem = await model.NConnect.create(body);
     return NextResponse.json(newItem, { status: 201 });
