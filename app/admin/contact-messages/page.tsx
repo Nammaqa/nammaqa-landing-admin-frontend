@@ -100,6 +100,7 @@ export default function ContactMessagesPage() {
       email: "",
       contact_number: "",
       message: "",
+      course_interested: "",
     });
     setFormError("");
     setStatusMessage("");
@@ -114,6 +115,7 @@ export default function ContactMessagesPage() {
       email: item.email,
       contact_number: item.contact_number || "",
       message: item.message,
+      course_interested: item.course_interested || "",
     });
     setFormError("");
     setStatusMessage("");
@@ -441,7 +443,7 @@ export default function ContactMessagesPage() {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Course Interested In (Optional)</label>
+            <label className="block text-sm font-medium text-gray-600 mb-1">Course Interested In</label>
             <input
               type="text"
               className="w-full bg-white border border-gray-300 rounded p-2 text-gray-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
