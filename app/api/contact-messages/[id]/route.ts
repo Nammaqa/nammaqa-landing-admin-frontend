@@ -47,6 +47,7 @@ export async function PUT(
     const email = normalizeEmail(body?.email);
     const contact_number = normalizeContactNumber(body?.contact_number);
     const message = normalizeString(body?.message);
+    const course_interested = normalizeString(body?.course_interested);
 
     if (!full_name || !email || !contact_number || !message) {
       return NextResponse.json(
@@ -78,7 +79,7 @@ export async function PUT(
       );
     }
 
-    await item.update({ full_name, email, contact_number, message });
+    await item.update({ full_name, email, contact_number, message, course_interested });
     return NextResponse.json(item);
   } catch {
     return NextResponse.json(
