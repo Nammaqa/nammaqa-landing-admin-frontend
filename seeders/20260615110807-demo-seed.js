@@ -25,6 +25,7 @@ export async function up(queryInterface, Sequelize) {
     title: 'NextJS Masterclass',
     description: 'Learn Next.js App Router and Server Actions',
     link: 'https://example.com/register',
+    mode: 'offline',
     createdAt: new Date(),
     updatedAt: new Date()
   }]);

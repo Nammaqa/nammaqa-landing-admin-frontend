@@ -1,10 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import db from "@/lib/db";
 
+const validModes = ["online", "offline"];
+
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const { id } = await params;
     const body = await req.json();
+    if (body.mode !== undefined && !validModes.includes(body.mode)) {
+      return NextResponse.json({ error: "Mode must be online or offline" }, { status: 400 });
+    }
     const item = await (db as any).NConnect.findByPk(id);
     if (!item) return NextResponse.json({ error: "Not found" }, { status: 404 });
     await item.update(body);
