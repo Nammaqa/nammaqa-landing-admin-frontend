@@ -102,9 +102,13 @@ export async function POST(req: NextRequest) {
       },
       { status: 201 }
     );
-  } catch {
+  } catch (error) {
+    console.error("Detailed Error creating contact message:", error);
     return NextResponse.json(
-      { error: "Failed to create contact message" },
+      { 
+        error: "Failed to create contact message", 
+        details: error instanceof Error ? error.message : String(error)
+      },
       { status: 500 }
     );
   }
