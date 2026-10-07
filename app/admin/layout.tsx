@@ -94,6 +94,12 @@ export default async function AdminLayout({
                 <span>Message Us</span>
               </Link>
             </li>
+            <li>
+              <Link href="/admin/hire-contacts" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-100 transition-colors text-gray-700 hover:text-gray-900 group">
+                <Users className="w-5 h-5 text-purple-600 group-hover:scale-110 transition-transform" />
+                <span>Hire Contacts</span>
+              </Link>
+            </li>
           </ul>
         </nav>
 
