@@ -12,6 +12,7 @@ import NConnectModel from './nconnect.js';
 import NewsletterSubscriptionModel from './newslettersubscription.js';
 import SuccessStoryModel from './successstory.js';
 import UserModel from './user.js';
+import HireContactModel from './hirecontact.js';
 
 const env = process.env.NODE_ENV || 'development';
 const config = configByEnv[env];
@@ -43,6 +44,7 @@ const modelDefinitions = [
   NewsletterSubscriptionModel,
   SuccessStoryModel,
   UserModel,
+  HireContactModel,
 ];
 
 modelDefinitions.forEach((defineModel) => {
