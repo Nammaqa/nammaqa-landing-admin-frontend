@@ -58,13 +58,22 @@ export default function GalleryPage() {
 
   const handleOpenCreate = () => {
     setEditingId(null);
-    setFormData({});
+    setFormData({
+      image_urls: [],
+      image_title: "",
+      date: "",
+      description: "",
+      hashtags: "",
+    });
     setIsModalOpen(true);
   };
 
   const handleOpenEdit = (item: any) => {
     setEditingId(item.id);
-    setFormData(item);
+    setFormData({
+      ...item,
+      image_urls: item.image_url ? [item.image_url] : [],
+    });
     setIsModalOpen(true);
   };
 
@@ -77,24 +86,77 @@ export default function GalleryPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.image_url) {
-      alert("Please upload an image before saving the gallery item.");
+    const imageUrls: string[] = Array.isArray(formData.image_urls)
+      ? formData.image_urls
+      : formData.image_url
+      ? [formData.image_url]
+      : [];
+
+    if (imageUrls.length === 0) {
+      alert("Please upload at least one image before saving the gallery item.");
       return;
     }
 
     setIsSaving(true);
-    const method = editingId ? "PUT" : "POST";
-    const url = editingId ? `/api/gallery/${editingId}` : "/api/gallery";
 
     try {
-      await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
+      if (editingId) {
+        // Edit mode: update existing record with the first image
+        const updateRes = await fetch(`/api/gallery/${editingId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            image_url: imageUrls[0],
+            image_title: formData.image_title || null,
+            date: formData.date || null,
+            description: formData.description || null,
+            hashtags: formData.hashtags || null,
+          }),
+        });
+
+        if (!updateRes.ok) {
+          throw new Error("Failed to update item");
+        }
+
+        // If extra images were added during edit, create new records for them
+        if (imageUrls.length > 1) {
+          const extraUrls = imageUrls.slice(1);
+          await fetch("/api/gallery", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              image_urls: extraUrls,
+              image_title: formData.image_title || null,
+              date: formData.date || null,
+              description: formData.description || null,
+              hashtags: formData.hashtags || null,
+            }),
+          });
+        }
+      } else {
+        // Create mode: can be single or multiple images
+        const createRes = await fetch("/api/gallery", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            image_urls: imageUrls,
+            image_title: formData.image_title || null,
+            date: formData.date || null,
+            description: formData.description || null,
+            hashtags: formData.hashtags || null,
+          }),
+        });
+
+        if (!createRes.ok) {
+          throw new Error("Failed to create item(s)");
+        }
+      }
 
       setIsModalOpen(false);
       fetchItems();
+    } catch (err) {
+      console.error("Error saving gallery item:", err);
+      alert("Error saving gallery item. Please try again.");
     } finally {
       setIsSaving(false);
     }
@@ -112,6 +174,8 @@ export default function GalleryPage() {
     { key: "hashtags", label: "Hashtags" },
   ];
 
+  const imageCount = (formData.image_urls || []).length;
+
   return (
     <div>
       <DataTable
@@ -127,10 +191,16 @@ export default function GalleryPage() {
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={editingId ? "Edit Gallery" : "Create Gallery"}>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Image Upload <span className="text-red-500">*</span></label>
+            <label className="block text-sm font-medium text-gray-600 mb-1">
+              Images <span className="text-red-500">*</span>
+              <span className="text-xs text-gray-400 font-normal ml-2">
+                (You can select or drop multiple images)
+              </span>
+            </label>
             <ImageUpload 
-              value={formData.image_url || ""} 
-              onChange={(url) => setFormData({ ...formData, image_url: url })} 
+              multiple={true}
+              value={formData.image_urls || []} 
+              onChange={(urls) => setFormData({ ...formData, image_urls: urls })} 
             />
           </div>
           <div>
@@ -184,6 +254,8 @@ export default function GalleryPage() {
                   <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
                   Saving...
                 </span>
+              ) : imageCount > 1 ? (
+                `Save (${imageCount} images)`
               ) : (
                 "Save"
               )}
