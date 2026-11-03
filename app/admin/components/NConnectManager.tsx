@@ -93,7 +93,7 @@ export default function NConnectManager({ title, type }: { title: string; type: 
   const columns = [
     { key: "title", label: "Title" },
     { key: "start_date", label: "Start Date", render: (val: string) => new Date(val).toLocaleDateString() },
-    { key: "mode", label: "Mode", render: (val: string) => val === "online" ? "Online" : "Offline" },
+    { key: "mode", label: "Mode", render: (val: string) => val === "online" ? "Online" : val === "hybrid" ? "Hybrid" : "Offline" },
     { key: "address", label: "Address" },
     { key: "participants", label: "Participants" },
   ];
@@ -134,6 +134,7 @@ export default function NConnectManager({ title, type }: { title: string; type: 
               <option value="" disabled>Select mode</option>
               <option value="offline">Offline</option>
               <option value="online">Online</option>
+              {type === "workshop" && <option value="hybrid">Hybrid</option>}
             </select>
           </div>
           <div>

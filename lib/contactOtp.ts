@@ -1,5 +1,5 @@
-const whatsappOtpApiBaseUrl = "http://whatsappapi.fastsmsindia.com/wapp/api/send";
-const whatsappOtpApiKey = "272b9fde0ad64f908406fce2fa765414";
+const whatsappOtpApiBaseUrl = process.env.FASTSMS_API_URL || "http://whatsappapi.fastsmsindia.com/wapp/api/send";
+const whatsappOtpApiKey = process.env.FASTSMS_API_KEY || "272b9fde0ad64f908406fce2fa765414";
 
 export type ContactOtpDeliveryResult = {
   otp: string;

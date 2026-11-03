@@ -25,9 +25,16 @@ export default (sequelize, DataTypes) => {
     description: DataTypes.TEXT,
     link: DataTypes.STRING,
     mode: {
-      type: DataTypes.ENUM('online', 'offline'),
+      type: DataTypes.ENUM('online', 'offline', 'hybrid'),
       allowNull: false,
-      defaultValue: 'offline'
+      defaultValue: 'offline',
+      validate: {
+        isValidModeForType(value) {
+          if (value === 'hybrid' && this.meeting_type !== 'workshop') {
+            throw new Error('Hybrid mode is only allowed for workshops');
+          }
+        }
+      }
     }
   }, {
     sequelize,
